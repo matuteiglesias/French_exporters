@@ -8,5 +8,5 @@
 ./.git/objects/18/f24e25a0f191a9af40511a3fbebfbcf376515b
 ./.git/objects/81/57c0d29bc71f82f57e820febf96956383f1e8d
 ./buyr_sizes.csv
-./data/processed/buyer_sizes.csv
-./data/processed/buyer_seller_links.csv
+data/processed/buyer_sizes.csv
+data/processed/buyer_seller_links.csv
