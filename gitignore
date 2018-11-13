@@ -1,5 +1,5 @@
-./data/type1
-./data/type2
+data/type1
+data/type2
 
 # $find . -size +50M | cat >> .gitignore
 
@@ -12,5 +12,5 @@
 ./notebooks/firm_log_VART_stats.csv
 ./data/type2/DP1611_MAASTRICHT2_2013.txt
 ./data/type2/DP1611_MAASTRICHT2_2012.txt
-./data/processed/firm_sizes.csv
-./data/processed/buyr_sizes.csv
+data/processed/firm_sizes.csv
+data/processed/buyr_sizes.csv
