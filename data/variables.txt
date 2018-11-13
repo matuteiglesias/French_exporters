@@ -1,0 +1,133 @@
+Column 1.  YEAR
+Column 2.  MONTH [1-12]
+Column 3.  FLUX: flow type [1 = Import ouside UE;  2 = Export outside UE; 3 = Import within UE, 4=export within UE]
+Column 4.  ID code domestic firm
+Column 5.  DEPT: geo location of the flow (department of transaction)
+Column 6.  NC8: product code; https://ec.europa.eu/taxation_customs/business/calculation-customs-duties/what-is-common-customs-tariff/combined-nomenclature_en
+Column 7.  CPA6: CPA6 rev 2 - 2008 identifier
+Column 8.  PYOD: partner country code (origin or destination)
+Column 9.  PAYP: country code (initial origin for imports "provenance")
+Column 10. VAT: anonymized VAT number (for flows within EU, "ventes fermes"=regime 21)
+Column 11. PRIFAC: value in local currency (for years >2010, else in euros)
+Column 12. DEVFAC: local currency (for years >2010, else EUR)
+Column 13. VFTE: value in euros --  value on the bill
+Column 14. VART: statistical value (in euros) -- value at the border
+Column 15. D_MASSE: Indicator non zero mass (bad between 2006-2010)
+Column 16. MASSE: mass in kg
+Column 17. USUP: additional units >> classification: document USUP-libellés
+Column 18. USUP_MT: amount in additional unit (nb of m3, liters...)
+
+DP1610_MAASTRICHT2_2009 -- données sous-seuils DEB (Déclarations d’échanges de biens dans l’UE)
+Column 1: YEAR
+Column 2: MONTH [1-12]
+Column 3: FLUX: flow type [DEB (déclarations UE) flux = 4 export flows]
+Column 4: SIREN
+Column 5: DEPE: geo location of the firm 
+Column 6: PYOD: country name
+Column 7: REGIME: [21; 25 or 26]
+Column 8: VAT: anonymized VAT number
+Column 9: VFTE: value on the bill in euros
+Column 10:? [0 or repetition of value]
+
+
+Fichier n° 1
+* critères d’extraction des données :
+- flux entrants et sortants
+- DEB (déclarations UE) et DAU (déclarations hors UE)
+- années 1997 à 2013
+- toutes NC8 sauf matériel de guerre  (certaines NC8 confidentialisées) >> cf fichiers fournis précédemment
+- tous pays, tous siren
+- données du commerce extérieur.
+ 
+* structure des fichiers de données :
+- année, mois
+- flux imex (1 = Import hors UE, 2 = Export hors UE, 3 = Import UE, 4=export UE)
+- code siren de l’entreprise
+- département de transaction
+- nomenclature NC8
+- nomenclature CPA6 rev 2 - 2008
+- code pays d’origine ou de destination
+- code pays de provenance ( à l’import)
+- numéro TVA anonymisé du partenaire pour les flux expéditions UE (hors régime 29)
+- valeur facture en devises
+- devise
+- valeur facture en euros
+- valeur statistique (en euros)
+- indicateur de présence de masse (pour gérer les lacunes sur l'UE de 2006 à 2009 + 2010 partiel
+- masse (en kilos)
+- unités supplémentaires.
+
+
+
+
+
+Fichier n° 2
+* critères d’extraction des données :
+- flux DEB sortants sous-seuils (- régime (=21, 29 ventes fermes)
+- DEB (déclarations UE) flux = 4
+- années 1997 à 2013
+- tous pays
+- tous siren
+ 
+* structure des fichiers de données :
+- année, mois
+- flux expédition (= 4)
+- code siren de l’entreprise
+- code pays du partenaire client UE
+- numéro TVA anonymisé
+- valeur facture (en euros)
+
+
+
+**************************
+
+Fichier n°1 (le plus gros fichier)
+-------------------------------------------
+- colonne 10 (numéro de TVA anonymisé):
+Nous observons que le numéro est disponible pour les flux de type 4 (exportations vers UE, défini colonne 3). Donc il n'est pas disponible pour les flux de type 3 (importations depuis UE)? D'autre part, nous avons observé que par conséquent les flux sont alors désagrégés pour chaque entreprise française- destination-produit- entreprise étrangère (donc il peut y avoir plusieurs observations pour le même siren- NC8-destination). Pouvez-vous confirmer que l'on peut obtenir le flux total par siren-NC8-destination en sommant ces valeurs? (en d'autres termes, il n'y a pas de flux manquants)
+> Le N°PART n'est qu'à l'export UE que pour les ventes fermes (régimes 21), pour les ventes à distances, etc (régime29) pas de PART.
+On a bien le flux total, mais seulement quand on a le NC8, sur les sous-seuils (fichier N°2), donc les totaux sont minorés.
+
+- colonne 12: devise utilisée
+Toutes les observations indiquent que la devise utilisée est l'Euro, est-ce normal? 
+> jusqu'en 2010 inclus tout est en euros : les données "devises" n'ayant pas été intégrées dans nos bases. 
+si vous voulez, je vous envoie 2013 pour voir, sachant que la colonne 10 n'est pas au point pour nous à partir de 2010 (pour le moment)
+
+- Colonne 14: valeur en euros "statistiques"
+Pouvez-vous expliquer la différence avec la valeur de la colonne 12 (valeur en euros)? 
+Pour simplifier, la valeur statistique c'est la valeur rendue à la frontière française / colonne 12 c'est la valeur facturée. 
+après si on rentre dans la technique des frais, incoterms, régimes, ça devient assez compliqué.
+
+- Colonne 17: unités additionnelles
+Y-a-t'il une classification permettant de comprendre l'unité de valeur?
+Oui, ci-joint la table des codes
+- Colonne 18: Nous ne comprenons pas à quoi correspond cette colonne (quantité en unité additionnelle?)
+c'est par exemple le nombre de litres, de m3
+
+Fichier n°2
+----------------
+- colonne 3 : Le fichier ne comporte que des flux de type 4, les données d'importation ne sont pas disponibles, est-ce correct?
+seulement à l'export comme précisé dans le devis et certains messages.
+
+- colonne 5: département 
+Les valeurs 97 et 98 correspondent-elles respectivement aux DOM (971-976) et TOM (984-988)? 
+ce n'est pas le département de la transaction DEPT mais le département de l'entreprise DEPE (cf devis et pièce jointe).
+
+
+----------------------------------------
+
+La documentation étant en ébauche, l'annexe n'existe pas. Avec le tableau joint, vous devriez trouver vos réponses.
+
+- Si je comprends bien, les données du fichier 1 correspondent toutes au régime 21 (ventes fermes), est-ce correct?
+
+Eh bien, non.
+C'est plus compliqué que ça. Dans le fichier 1, il y a les flux hors UE, donc rien à voir avec le régime 21 de l'UE
+Le régime 21 ne concerne qu'une partie de l'export UE (la principale et la seule qui a le numéro TVA partenaire), mais il y a aussi le régime 29 (ventes à distance par exemple)
+pour lequel nous n'avons pas le numéro de partenaire.
+
+- Quelle est la nature de la variable correspondant à la dernière colonne du fichier 2? (colonne 10)
+
+De bonne nature.
+C'est la valeur en euros utilisée pour les statistiques. Dans le fichier 2, suivant les années, il arrive que cette rubrique soit nulle, ou la colonne (valeur facture) soit nulle
+c'est pourquoi on vous met les 2. Je vous ferai un "digest" sur le comment exploiter ces données avec un exemple, la semaine prochaine.
+Car demain et après demain, je suis en congés
