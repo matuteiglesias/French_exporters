@@ -1,0 +1,16 @@
+./data/type1
+./data/type2
+
+# $find . -size +50M | cat >> .gitignore
+
+./notebooks/firm_log_VART_stats.csv
+./data/type2/DP1611_MAASTRICHT2_2013.txt
+./data/type2/DP1611_MAASTRICHT2_2012.txt
+./data/processed/firm_sizes.csv
+./data/processed/buyr_sizes.csv
+./.git/objects/18/f24e25a0f191a9af40511a3fbebfbcf376515b
+./notebooks/firm_log_VART_stats.csv
+./data/type2/DP1611_MAASTRICHT2_2013.txt
+./data/type2/DP1611_MAASTRICHT2_2012.txt
+./data/processed/firm_sizes.csv
+./data/processed/buyr_sizes.csv
