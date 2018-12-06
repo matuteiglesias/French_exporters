@@ -1,17 +1,8 @@
-./data/type1
-./data/type2
-
 # $find . -size +50M | cat >> .gitignore
 
-./.git/objects/pack/pack-430fa9cd8e217db82d9915c3b58cc95cbf2160b4.pack
-./.git/objects/pack/pack-1c46fb01d10917f3043c2e9d6b6472dcab898979.pack
-./.git/objects/18/f24e25a0f191a9af40511a3fbebfbcf376515b
-./.git/objects/81/57c0d29bc71f82f57e820febf96956383f1e8d
-./buyr_sizes.csv
-./data/processed/buyer_sizes.csv
-./data/processed/buyer_seller_links.csv
+./data/
+
+./.git/objects/pack/pack-34220b53e35c1b6cf3c4941a17eeaf11002a56e7.pack
 ./notebooks/firm_log_VART_stats.csv
 ./data/type2/DP1611_MAASTRICHT2_2013.txt
 ./data/type2/DP1611_MAASTRICHT2_2012.txt
-./data/processed/firm_sizes.csv
-./data/processed/buyr_sizes.csv
