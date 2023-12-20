@@ -1,8 +1,5 @@
-Creating an effective `README.md` for your GitHub repository is crucial, as it serves as the first point of information for anyone exploring your project. Here's a suggested structure and content for your `README.md`:
 
----
-
-# Project Title: French Exporters Data Analysis
+# French Exporters Data Analysis
 
 ## Description
 This repository contains a comprehensive analysis of French exporters, leveraging a series of Jupyter notebooks to explore various aspects of trade data. The project aims to provide insights into economic linkages, growth rates, firm dynamics, and sourcing strategies within the French export market.
@@ -49,18 +46,3 @@ Navigate to the `/notebooks` directory and open the Jupyter notebooks using Jupy
 
 ## Contributing
 Contributions to this project are welcome! Please read our contributing guidelines for details on our code of conduct and the process for submitting pull requests.
-
-## License
-This project is licensed under the [MIT License](LICENSE) - see the LICENSE file for details.
-
-## Acknowledgments
-- Data sources: [Source Name 1], [Source Name 2]
-- Special thanks to [Individual/Organization Name] for [Reason].
-
----
-
-### Notes:
-- Replace `[repository URL]` with the actual URL of your GitHub repository.
-- Update the sections like `Data sources` and `Acknowledgments` as per your project details.
-- Ensure the `LICENSE` link corresponds to the actual license file in your repository.
-- It's helpful to keep the README updated as your project evolves.
