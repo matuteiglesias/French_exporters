@@ -1,6 +1,6 @@
 schema_version: "0.1"
-state_updated_at: "2026-07-23"
-state_updated_by: "Steward simulated morning run"
+state_updated_at: "2026-07-22T20:47:41-03:00"
+state_updated_by: "Steward evening close"
 
 programme:
   name: "Economics of Aggregation, Scale, and Measurement"
@@ -12,75 +12,99 @@ programme:
   reserve_front:
     id: "P3"
     title: "Administrative Areas as Implicit Spatial Kernels"
+    activation_status: "NOT_ACTIVATED"
 
 pi_evidence:
   original_data_available: true
   data_access_now: false
   note: >
-    PI confirms possession of the original data. Current phase is deliberately
-    data-free and must not treat data availability as the active blocker.
+    The PI possesses the original data. Current work remains deliberately
+    data-free; data availability is not the active blocker.
 
 current_bottleneck: >
-  The repository has several related generators, decomposition notebooks,
-  output families, and presentation notebooks, but the authoritative estimator
-  and exact estimand lineage for AGG-ALPHA-EXPORT have not been identified.
+  The code neighborhood is inventoried, but no inspected implementation maps an
+  authoritative fitted variance/population slope to the reported positive export
+  alpha of approximately 0.48-0.50. Dependent variable, partition rule, fitting
+  sample, weighting, uncertainty, output family, and sign mapping remain unresolved.
 
 current_play:
-  mode: "BUILD"
-  lead_player: "Reproducibility Engineer"
+  mode: "CONSOLIDATE"
+  lead_player: "Steward"
   supporting_players:
+    - "Reproducibility Engineer"
     - "Archivist"
     - "Methodkeeper"
   objective: >
-    Freeze a data-free code-role map and extract every candidate fitted-slope
-    implementation before executing or refactoring legacy code.
+    Inspect and classify the day's merged infrastructure and code-archaeology
+    outputs, freeze the bottleneck, and leave tomorrow's restart pointer.
   completion_condition: >
-    Generator, estimator, mechanism, and presentation roles are inventoried;
-    fitting snippets are extracted; output lineages are mapped or marked
-    orphaned; and no scientific default is silently selected.
+    Fast Git has an evidence-backed operational classification, scientific
+    artifacts retain REVIEW status, and the next PI gate is explicit.
+  status: "ACHIEVED"
 
 repository:
   name: "matuteiglesias/French_exporters"
   default_branch: "master"
-  work_branch: "agent/export-alpha-code-map"
   governance:
     - "research/governance/README.md"
     - "AGENTS.md"
-  primary_play: "research/plays/2026-07-23_AM_export_alpha_code_map_v0_1.md"
-  codex_packet: "research/codex/2026-07-23_export_alpha_archaeology_task_v0_1.md"
+  evening_close: "research/plays/2026-07-22_PM_steward_close_v0_1.md"
+  merged_today:
+    - pr: 3
+      title: "Map export-alpha code roles before data execution"
+      result: "MERGED"
+    - pr: 4
+      title: "Emergency fast Git iteration path"
+      result: "MERGED"
+    - pr: 5
+      title: "Add emergency fast Git iteration workflow"
+      result: "MERGED"
+    - pr: 6
+      title: "Add export-alpha code archaeology manifest and estimator snippets (REVIEW)"
+      result: "MERGED"
 
-inspected_evidence:
-  - path: "notebooks/02_Statistical_Analysis_and_Modeling/Thesis/Experiment 5. Simple var vs nq, s. (s).ipynb"
-    role: "GENERATOR_CANDIDATE"
-    state: "REVIEW"
-    finding: >
-      Reads ID_Y.csv, filters exports, constructs firm-year values, simulates
-      shocks, computes group variances, and writes aggregated simulation results.
-    uncertainty: "No inspected cell directly freezes the reported alpha estimator."
-  - path: "notebooks/02_Statistical_Analysis_and_Modeling/PreliminaryStudies/Linear Base + Noise decomposition.ipynb"
-    role: "MECHANISM_CANDIDATE"
-    state: "REVIEW"
-    finding: >
-      Builds cumulative-value groups and decomposes base, common, and noise
-      covariance terms.
-  - path: "notebooks/06_Visualization_and_Presentation/Sigma vs log(n), q plots.ipynb"
-    role: "PRESENTATION_ESTIMATOR_NEIGHBORHOOD"
-    state: "REVIEW"
-    finding: >
-      Loads exp_var output families, constructs group n, merges n with variance,
-      plots log-log variance-population relationships, and compares to 1/n.
-    uncertainty: "Inspected cells present curves but do not yet freeze the fitted alpha."
-  - path: "notebooks/bkp_misc_data/exp_var_norm_1s.csv"
-    role: "LEGACY_OUTPUT_LEAD"
-    state: "REVIEW"
-    git_lfs_oid: "sha256:ad455420518ed682e8bb380cdf05b8975477a75992937aa2524423e95834e0d5"
-    lfs_size_bytes: 69397
-  - path: "Notes/summary_code_nbs.md"
-    role: "SUMMARY_ONLY"
-    state: "REVIEW"
-    finding: >
-      Mentions Decomposition terms. w Bootstrap.ipynb as using polyfit and log10
-      to connect self-variance and n; canonical notebook path remains unresolved.
+infrastructure_evidence:
+  fast_git_workflow:
+    classification: "ACCEPTED_FOR_OPERATIONAL_USE"
+    acceptance_scope: "clone, checkout, and bounded sync workflow only"
+    evidence_artifact: "research/artifacts/git_repository_iteration_report_v0_1.md"
+    scripts:
+      - "scripts/git_fast_clone.sh"
+      - "scripts/git_fast_sync.sh"
+      - "scripts/verify_fast_git_workflow.sh"
+    documentation: "docs/FAST_GIT_WORKFLOW.md"
+    measured_result:
+      clone_elapsed_seconds: 2
+      sync_elapsed_seconds: 1
+      git_directory_bytes_after_sync: 3801088
+      working_tree_bytes: 9347072
+      partial_clone_active: true
+      shallow: true
+      sparse_checkout_active: true
+      lfs_payload_objects: 0
+      lfs_payload_bytes: 0
+      integration_verifier: "PASS"
+    boundary: >
+      This acceptance does not validate scientific notebooks, data, estimators,
+      or results. History rewrite and repository splitting remain unauthorized.
+
+scientific_evidence:
+  code_archaeology:
+    classification: "REVIEW"
+    manifest: "research/artifacts/export_alpha_code_role_manifest_v0_1.csv"
+    snippets: "research/artifacts/export_alpha_estimator_snippets_v0_1.md"
+    inventory: "research/state/aggregation_reproducibility_inventory_v0_1.csv"
+    validation:
+      files_inventoried: 34
+      estimator_snippets: 6
+      orphaned_output_families: 8
+      engineering_acceptance_tests: "PASS"
+      notebooks_executed: false
+      data_opened: false
+      scientific_validation: false
+    principal_finding: >
+      No extracted snippet names alpha or defines the mapping from a fitted slope
+      to the reported export-alpha claim.
 
 claim_evidence:
   claim_id: "AGG-ALPHA-EXPORT"
@@ -88,38 +112,67 @@ claim_evidence:
   reproduced_alpha: null
   status: "BLOCKED"
   blocker: >
-    Authoritative estimator, dependent-variable definition, group construction,
-    repetition aggregation, weighting, uncertainty calculation, and sign mapping
-    remain unresolved.
+    Authoritative estimator lineage and estimand contract remain unresolved.
   data_dependency_status: "AVAILABLE_LATER_NOT_CURRENT_BLOCKER"
+  retained_choices_for_PI:
+    - "variance versus standard deviation"
+    - "slope sign and mapping to positive alpha"
+    - "authoritative generator/output family"
+    - "group and partition construction"
+    - "fitting sample and weighting"
+    - "uncertainty estimator"
+    - "empirical versus simulated shocks"
 
-artifacts:
+artifact_states:
+  accepted_for_operational_use:
+    - "scripts/git_fast_clone.sh"
+    - "scripts/git_fast_sync.sh"
+    - "scripts/verify_fast_git_workflow.sh"
+    - "docs/FAST_GIT_WORKFLOW.md"
+    - "research/artifacts/git_repository_iteration_report_v0_1.md"
   review:
-    - "research/plays/2026-07-23_AM_export_alpha_code_map_v0_1.md"
-    - "research/codex/2026-07-23_export_alpha_archaeology_task_v0_1.md"
-    - "research/state/laboratory_state_v0_1.yaml"
+    - "research/artifacts/export_alpha_code_role_manifest_v0_1.csv"
+    - "research/artifacts/export_alpha_estimator_snippets_v0_1.md"
     - "research/state/aggregation_reproducibility_inventory_v0_1.csv"
-  accepted: []
+    - "research/plays/2026-07-22_PM_steward_close_v0_1.md"
+  accepted_scientific_results: []
 
 pi_hour:
-  prepared: true
-  duration_minutes: 60
-  primary_artifact: "research/plays/2026-07-23_AM_export_alpha_code_map_v0_1.md"
-  objective: "Recognize or reject the candidate authoritative notebook/figure lineage without loading data."
+  planned_hour_executed_as_written: false
+  classification: "PARTIAL_ADVANCE_NOT_A_COMPLETED_PI_HOUR"
+  meaningful_actions:
+    - "confirmed possession of original data"
+    - "directed a data-free phase"
+    - "prioritized repository latency remediation"
+    - "reviewed Codex estimator snippets"
+  remaining_objective: >
+    Identify or explicitly shortlist the authoritative estimator lineage and
+    write the estimand contract without loading data.
 
 next_pointer:
+  first_question: >
+    Was the approximately 0.48-0.50 number an exponent for variance or for
+    standard deviation, and which surviving output is recognized as its source?
   action: >
-    Run the bounded Codex archaeology packet and review the resulting code-role
-    manifest and estimator snippets before any notebook execution.
+    Open only the estimator snippets and code-role manifest; record one preferred
+    lineage or an explicit unresolved shortlist plus a five-to-ten-line estimand
+    definition before assigning further Codex work.
   stop_condition: >
-    Stop when one authoritative estimator lineage is selected or a precise
-    unresolved shortlist with scientific choices is recorded.
+    Stop when one lineage is selected or the exact remaining ambiguity is recorded.
 
-do_not_open_yet:
-  - "confidential source data"
-  - "P3"
-  - "manuscript-wide rewrite"
-  - "journal targeting"
-  - "repository-wide notebook cleanup"
-  - "environment modernization"
-  - "new robustness tests"
+wip:
+  active_research_output_fronts: 1
+  next_executor: "PI, then Codex/Reproducibility Engineer"
+
+close_instruction:
+  do_not_reopen_tonight: true
+  do_not_open:
+    - "confidential source data"
+    - "P3"
+    - "manuscript-wide rewrite"
+    - "journal targeting"
+    - "repository-wide notebook cleanup"
+    - "environment modernization"
+    - "new robustness tests"
+    - "history rewrite"
+    - "repository splitting"
