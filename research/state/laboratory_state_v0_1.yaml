@@ -1,0 +1,107 @@
+schema_version: "0.1"
+state_updated_at: "2026-07-22"
+state_updated_by: "Steward repository recovery run"
+
+programme:
+  name: "Economics of Aggregation, Scale, and Measurement"
+  principal_investigator: "Matías Iglesias"
+  active_front:
+    id: "P2"
+    title: "Concentration Is Not the Scaling Exponent"
+    state: "evidence_recovery"
+  reserve_front:
+    id: "P3"
+    title: "Administrative Areas as Implicit Spatial Kernels"
+
+current_bottleneck: >
+  The legacy repository contains candidate notebooks and generated outputs, but
+  the export variance-decay chain is not executable from a documented input,
+  command, estimator, and output path.
+
+current_play:
+  mode: "BUILD"
+  lead_player: "Reproducibility Engineer"
+  supporting_players:
+    - "Archivist"
+    - "Methodkeeper"
+  objective: >
+    Map the legacy export-alpha evidence chain and extract the smallest runnable
+    reproduction target without changing scientific meaning.
+  completion_condition: >
+    AGG-ALPHA-EXPORT has an inspected input path, executable entry point,
+    estimator specification, output path, reproduction result, and exact blocker.
+
+repository_evidence:
+  repository: "matuteiglesias/French_exporters"
+  default_branch: "master"
+  recovery_branch: "agent/research-governance-recovery"
+  repository_size_kb: 761425
+  git_lfs:
+    configured: true
+    pattern: "*.csv"
+  inspected_candidates:
+    - path: "notebooks/02_Statistical_Analysis_and_Modeling/Thesis/Experiment 5. Simple var vs nq, s. (s).ipynb"
+      state: "REVIEW"
+      evidence: >
+        Reads ../../../data/processed/ID_Y.csv, filters IMPORT == 0, constructs
+        firm-year VART, simulates shocks, computes variance by groups, and writes
+        ../../../data/processed/aggregated_simulation_results.csv.
+      blocker: >
+        Expected ID_Y.csv was not located in the inspected current-branch paths;
+        the committed generated output is stored under the notebook directory,
+        not the notebook's declared output path.
+    - path: "notebooks/02_Statistical_Analysis_and_Modeling/Thesis/Covariance Terms Bootstrap Experiments.ipynb"
+      state: "REVIEW"
+      evidence: >
+        Reads ../../data/processed/ID_Y.csv and contains bootstrap/covariance
+        decomposition logic relevant to the flagship mechanism.
+    - path: "data/bootstraps/"
+      state: "REVIEW"
+      evidence: >
+        Contains random/sorted, linear/log, import/export covariance and
+        partition output families tracked through Git LFS.
+    - path: "notebooks/bkp_misc_data/exp_var_norm_1s.csv"
+      state: "REVIEW"
+      evidence: "Candidate legacy export variance output; content not yet inspected."
+
+claim_evidence:
+  highest_priority_claim:
+    claim_id: "AGG-ALPHA-EXPORT"
+    claim: >
+      Export idiosyncratic variance decays with population size with exponent
+      approximately 0.48 to 0.50.
+    current_status: "BLOCKED"
+    reported_alpha: "approximately 0.48-0.50"
+    reproduced_alpha: null
+    first_missing_dependency: >
+      Recover the actual ID_Y.csv LFS object or establish the authoritative
+      predecessor pipeline that regenerates it.
+    known_uncertainties:
+      - "sign convention for alpha versus fitted slope"
+      - "which notebook/output is the authoritative flagship result"
+      - "randomness is not seeded in the inspected Experiment 5 notebook"
+      - "grouping uses cumulative size cuts and requires estimand review"
+      - "output path drift between notebook code and committed artifact"
+
+artifacts:
+  review:
+    - "research/governance/README.md"
+    - "AGENTS.md"
+    - "research/state/laboratory_state_v0_1.yaml"
+    - "research/state/aggregation_reproducibility_inventory_v0_1.csv"
+  accepted: []
+
+next_pointer:
+  action: >
+    Inspect the LFS availability and provenance of data/processed/ID_Y.csv; if
+    recoverable, run a read-only schema/sample audit before executing Experiment 5.
+  stop_condition: >
+    Stop after ID_Y.csv is recovered and fingerprinted, or the first exact LFS/data
+    provenance failure is recorded.
+
+do_not_open_yet:
+  - "P3"
+  - "manuscript-wide rewrite"
+  - "journal targeting"
+  - "repository-wide notebook cleanup"
+  - "new robustness tests"
