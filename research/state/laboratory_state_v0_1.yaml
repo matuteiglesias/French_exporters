@@ -1,0 +1,125 @@
+schema_version: "0.1"
+state_updated_at: "2026-07-23"
+state_updated_by: "Steward simulated morning run"
+
+programme:
+  name: "Economics of Aggregation, Scale, and Measurement"
+  principal_investigator: "Matías Iglesias"
+  active_front:
+    id: "P2"
+    title: "Concentration Is Not the Scaling Exponent"
+    state: "evidence_recovery"
+  reserve_front:
+    id: "P3"
+    title: "Administrative Areas as Implicit Spatial Kernels"
+
+pi_evidence:
+  original_data_available: true
+  data_access_now: false
+  note: >
+    PI confirms possession of the original data. Current phase is deliberately
+    data-free and must not treat data availability as the active blocker.
+
+current_bottleneck: >
+  The repository has several related generators, decomposition notebooks,
+  output families, and presentation notebooks, but the authoritative estimator
+  and exact estimand lineage for AGG-ALPHA-EXPORT have not been identified.
+
+current_play:
+  mode: "BUILD"
+  lead_player: "Reproducibility Engineer"
+  supporting_players:
+    - "Archivist"
+    - "Methodkeeper"
+  objective: >
+    Freeze a data-free code-role map and extract every candidate fitted-slope
+    implementation before executing or refactoring legacy code.
+  completion_condition: >
+    Generator, estimator, mechanism, and presentation roles are inventoried;
+    fitting snippets are extracted; output lineages are mapped or marked
+    orphaned; and no scientific default is silently selected.
+
+repository:
+  name: "matuteiglesias/French_exporters"
+  default_branch: "master"
+  work_branch: "agent/export-alpha-code-map"
+  governance:
+    - "research/governance/README.md"
+    - "AGENTS.md"
+  primary_play: "research/plays/2026-07-23_AM_export_alpha_code_map_v0_1.md"
+  codex_packet: "research/codex/2026-07-23_export_alpha_archaeology_task_v0_1.md"
+
+inspected_evidence:
+  - path: "notebooks/02_Statistical_Analysis_and_Modeling/Thesis/Experiment 5. Simple var vs nq, s. (s).ipynb"
+    role: "GENERATOR_CANDIDATE"
+    state: "REVIEW"
+    finding: >
+      Reads ID_Y.csv, filters exports, constructs firm-year values, simulates
+      shocks, computes group variances, and writes aggregated simulation results.
+    uncertainty: "No inspected cell directly freezes the reported alpha estimator."
+  - path: "notebooks/02_Statistical_Analysis_and_Modeling/PreliminaryStudies/Linear Base + Noise decomposition.ipynb"
+    role: "MECHANISM_CANDIDATE"
+    state: "REVIEW"
+    finding: >
+      Builds cumulative-value groups and decomposes base, common, and noise
+      covariance terms.
+  - path: "notebooks/06_Visualization_and_Presentation/Sigma vs log(n), q plots.ipynb"
+    role: "PRESENTATION_ESTIMATOR_NEIGHBORHOOD"
+    state: "REVIEW"
+    finding: >
+      Loads exp_var output families, constructs group n, merges n with variance,
+      plots log-log variance-population relationships, and compares to 1/n.
+    uncertainty: "Inspected cells present curves but do not yet freeze the fitted alpha."
+  - path: "notebooks/bkp_misc_data/exp_var_norm_1s.csv"
+    role: "LEGACY_OUTPUT_LEAD"
+    state: "REVIEW"
+    git_lfs_oid: "sha256:ad455420518ed682e8bb380cdf05b8975477a75992937aa2524423e95834e0d5"
+    lfs_size_bytes: 69397
+  - path: "Notes/summary_code_nbs.md"
+    role: "SUMMARY_ONLY"
+    state: "REVIEW"
+    finding: >
+      Mentions Decomposition terms. w Bootstrap.ipynb as using polyfit and log10
+      to connect self-variance and n; canonical notebook path remains unresolved.
+
+claim_evidence:
+  claim_id: "AGG-ALPHA-EXPORT"
+  reported_alpha: "approximately 0.48-0.50"
+  reproduced_alpha: null
+  status: "BLOCKED"
+  blocker: >
+    Authoritative estimator, dependent-variable definition, group construction,
+    repetition aggregation, weighting, uncertainty calculation, and sign mapping
+    remain unresolved.
+  data_dependency_status: "AVAILABLE_LATER_NOT_CURRENT_BLOCKER"
+
+artifacts:
+  review:
+    - "research/plays/2026-07-23_AM_export_alpha_code_map_v0_1.md"
+    - "research/codex/2026-07-23_export_alpha_archaeology_task_v0_1.md"
+    - "research/state/laboratory_state_v0_1.yaml"
+    - "research/state/aggregation_reproducibility_inventory_v0_1.csv"
+  accepted: []
+
+pi_hour:
+  prepared: true
+  duration_minutes: 60
+  primary_artifact: "research/plays/2026-07-23_AM_export_alpha_code_map_v0_1.md"
+  objective: "Recognize or reject the candidate authoritative notebook/figure lineage without loading data."
+
+next_pointer:
+  action: >
+    Run the bounded Codex archaeology packet and review the resulting code-role
+    manifest and estimator snippets before any notebook execution.
+  stop_condition: >
+    Stop when one authoritative estimator lineage is selected or a precise
+    unresolved shortlist with scientific choices is recorded.
+
+do_not_open_yet:
+  - "confidential source data"
+  - "P3"
+  - "manuscript-wide rewrite"
+  - "journal targeting"
+  - "repository-wide notebook cleanup"
+  - "environment modernization"
+  - "new robustness tests"
