@@ -1,0 +1,10 @@
+claim_id,claim_summary,default_owner_profile,allowed_secondary_use,evidence_gate,status
+P2-C1,Concentration is a level while volatility scaling is an elasticity,FLAGSHIP,"Formal paper may derive; trade paper may apply",G2 estimand freeze,REVIEW
+P2-C2,Aggregate alpha is a contribution-weighted local elasticity with signed covariance corrections,FORMAL_OR_INTEGRATED_FLAGSHIP,"Trade paper may use after citation/ownership decision",G4 reconstruction,REVIEW
+P2-C3,Direct aggregate alpha can be reconstructed from part and covariance contributions,TRADE_OR_INTEGRATED_FLAGSHIP,"Formal paper may state identity; empirical ownership remains with trade/flagship",G4 reconstruction,BLOCKED
+P2-C4,Covariance is quantitatively necessary or negligible over the tested range,TRADE_OR_INTEGRATED_FLAGSHIP,"Structural paper may study regime variation",G4 reconstruction,BLOCKED
+P2-C5,Measured alpha mixes diversification with composition drift when the population path is unstable,STRUCTURAL_OR_INTEGRATED_FLAGSHIP,"Formal paper may give counterexample",G5 adversarial validation,REVIEW
+P2-C6,Nonlinear micro moments affect variance amplitude and possibly finite-scale regimes,FORMAL_OR_INTEGRATED_FLAGSHIP,"Innovation/finance extension may estimate heterogeneity",G5 adversarial validation,REVIEW
+P2-C7,Export concentration alone is insufficient to characterize export resilience,TRADE,"Flagship may present as consequence",G5 adversarial validation,BLOCKED
+P2-C8,Innovation or financial regimes alter aggregation through moments covariance or transitions,FUTURE_EXTENSION,"No current paper may claim without data",NEW_DATA_REQUIRED,WAITING
+P2-C9,The result generalizes beyond exports to other heterogeneous populations,FORMAL,"Flagship may motivate only; general-interest claim requires multiple domains",MULTI_DOMAIN_VALIDATION,WAITING
