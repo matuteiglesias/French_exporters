@@ -51,9 +51,10 @@ current_bottleneck: >
   and part-population terms.
 
 current_play:
-  mode: "BUILD"
-  lead_player: "Reproducibility Engineer"
+  mode: "CONSOLIDATE"
+  lead_player: "Steward"
   supporting_players:
+    - "Reproducibility Engineer"
     - "Archivist"
     - "Methodkeeper"
   objective: >
@@ -259,6 +260,9 @@ pi_hour:
     - "common-N accounting panel"
 
 next_pointer:
+  first_question: >
+    Was the approximately 0.48-0.50 number an exponent for variance or for
+    standard deviation, and which surviving output is recognized as its source?
   action: >
     Run research/codex/2026-07-23_trace_exp_var_producer_task_v0_1.md against
     current master, beginning with Experiment 4 and inspecting Experiment 3 only
