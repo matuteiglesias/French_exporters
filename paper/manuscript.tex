@@ -1,0 +1,542 @@
+\documentclass[preprint,12pt,authoryear]{elsarticle}
+
+% ------------------------------------------------------------------
+% Packages
+% ------------------------------------------------------------------
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{microtype}
+\usepackage[
+    colorlinks=true,
+    allcolors=blue
+]{hyperref}
+
+% ------------------------------------------------------------------
+% Theorem environments
+% ------------------------------------------------------------------
+
+\newtheorem{proposition}{Proposition}
+
+% ------------------------------------------------------------------
+% Journal and bibliography
+% ------------------------------------------------------------------
+
+\journal{Economics Letters}
+\biboptions{authoryear,round}
+
+% ------------------------------------------------------------------
+% Document
+% ------------------------------------------------------------------
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{
+Concentration Is Not Scaling:
+An Exact Decomposition of Aggregate Variance Elasticities
+}
+
+\author[aff1]{Matías Iglesias\corref{cor1}}
+\cortext[cor1]{Corresponding author}
+\ead{mniglesias@dc.uba.ar}
+
+\address[aff1]{
+Departamento de Computación, Facultad de Ciencias Exactas y Naturales,
+Universidad de Buenos Aires, Buenos Aires, Argentina
+}
+
+\begin{abstract}
+Granular models relate aggregate volatility to the concentration of
+economic weights. This connection is exact only under restrictive
+assumptions on marginal shock variances, dependence, and population
+composition. Concentration is a state variable, whereas volatility
+scaling is an elasticity defined along a population path. We show that
+identical Herfindahl paths can generate different aggregate-variance
+elasticities and derive an exact finite-interval decomposition of that
+elasticity into changes in diagonal variance and signed covariance
+components. The decomposition uses the logarithmic mean of total
+variance and requires no logarithm of individual components. A
+contribution-weighted average of component elasticities emerges only
+under positivity and comparability conditions. Deterministic
+constructions verify the direct and reconstructed elasticities to
+machine precision. The result clarifies the boundary of
+concentration-based granular reasoning and supplies an accounting
+framework for micro-to-macro analyses of diversification.
+\end{abstract}
+
+\begin{keyword}
+aggregate volatility
+\sep concentration
+\sep diversification
+\sep variance decomposition
+\sep covariance
+\sep scaling elasticity
+
+\medskip
+\textit{JEL classification:} C02, C10, D20
+\end{keyword}
+
+\end{frontmatter}
+
+% ------------------------------------------------------------------
+% Main text
+% ------------------------------------------------------------------
+
+\section{Introduction}
+\label{sec:introduction}
+
+The granular approach restored an elementary but consequential fact to
+macroeconomic aggregation: units enter an aggregate according to their
+economic weights, so a small number of very large firms can prevent
+idiosyncratic fluctuations from averaging out rapidly
+\citep{gabaix2011}. Under mutually independent shocks with a common
+variance, the variance of a weighted aggregate is proportional to the
+Herfindahl index
+\begin{equation}
+    H(N)=\sum_{i=1}^{N}w_i(N)^2.
+\end{equation}
+A fat-tailed firm-size distribution can therefore generate a
+concentration path that declines slowly as the population expands.
+
+This benchmark is sometimes given a stronger interpretation: that the
+concentration path identifies the population-scaling rate of aggregate
+volatility. That conclusion is not general. Concentration describes the
+distribution of weights at a given scale. Aggregate-volatility scaling
+is an elasticity describing how the complete variance--covariance
+structure changes along a specified population path. The two objects
+coincide only when restrictions on marginal variances, dependence, and
+composition supply the missing bridge between them.
+
+For the weighted aggregate
+\begin{equation}
+    X_t(N)=\sum_{i=1}^{N}w_i(N)\varepsilon_{i,t}(N),
+\end{equation}
+aggregate variance is
+\begin{align}
+\label{eq:intro_variance}
+    V(N)
+    &=
+    \sum_{i=1}^{N}w_i(N)^2
+    \operatorname{Var}\!\left[\varepsilon_{i,t}(N)\right]
+    \nonumber\\
+    &\quad+
+    2\sum_{i<j}w_i(N)w_j(N)
+    \operatorname{Cov}\!\left[
+        \varepsilon_{i,t}(N),\varepsilon_{j,t}(N)
+    \right].
+\end{align}
+The proportionality $V(N)=\sigma^2H(N)$ follows when all shocks share a
+variance $\sigma^2$ that is stable along the population path and the
+off-diagonal terms vanish. These are not incidental simplifications.
+Even under independence, allowing the common shock variance to vary with
+population scale gives
+\begin{equation}
+\label{eq:benchmark_elasticity_bridge}
+    -\frac{d\log V(N)}{d\log N}
+    =
+    -\frac{d\log H(N)}{d\log N}
+    -\frac{d\log \sigma^2(N)}{d\log N}.
+\end{equation}
+The concentration elasticity identifies the variance elasticity only
+when the second term is zero. Heterogeneous firm-level variances replace
+$H(N)$ by a variance-weighted concentration object, while common shocks
+and economic linkages add off-diagonal terms. Population expansion may
+also alter the size, sectoral, or network composition of the aggregate.
+Once these channels are present, the Herfindahl index is not a sufficient
+statistic for either aggregate variance or its population elasticity.
+
+This paper separates the granular insight from that stronger inference.
+Granularity correctly establishes that aggregate variance is weighted
+by firm shares and may be dominated by a small number of large units. It
+does not, by itself, establish that the firm-size distribution identifies
+the rate at which aggregate variance changes with population size. We
+make this distinction precise in two steps.
+
+First, we show that identical concentration paths can generate different
+aggregate-volatility scaling. Equal-weight populations all satisfy
+$H(N)=1/N$, but aggregate variance follows $1/N$ only under independence.
+With persistent positive correlation, it instead approaches a positive
+covariance floor and its scaling elasticity converges to zero. No
+statistic constructed solely from the weights can distinguish the two
+systems.
+
+Second, we derive an exact finite-interval decomposition of the aggregate
+variance elasticity into changes in diagonal variance and signed
+covariance components. The formula does not take logarithms of individual
+components and therefore remains well defined when covariance
+contributions are negative. It also identifies the restrictive
+positive-component case in which an aggregate elasticity may be read as
+a contribution-weighted average of component elasticities.
+
+The paper sits at the intersection of three established literatures.
+Granular models study how unequal weights transmit microeconomic shocks
+to aggregates; network models show that dependence and propagation can
+prevent diversification; and index-decomposition and risk-allocation
+methods provide exact additive accounting tools
+\citep{gabaix2011,network_placeholder,lmdi_placeholder,risk_decomposition_placeholder}.
+Our claim is deliberately narrower than invention of any of these
+ingredients. The contribution is their combination for a distinct
+micro-to-macro object: the finite-interval elasticity of aggregate
+variance with respect to population scale. This formulation separates a
+level statement about weighted exposure from a path statement about
+diversification, retains signed covariance contributions, and yields an
+identity that can be checked directly in empirical or synthetic data.
+
+\section{Exact decomposition}
+\label{sec:exact_decomposition}
+
+Consider an aggregate composed of $Q$ contribution series,
+\begin{equation}
+    X_t(N)=\sum_{q=1}^{Q}c_{q,t}(N),
+\end{equation}
+where $N>0$ indexes population scale. Its variance is
+\begin{equation}
+\label{eq:variance_accounting}
+    V(N)
+    =
+    \sum_{q=1}^{Q}\operatorname{Var}\!\left[c_{q,t}(N)\right]
+    +
+    2\sum_{q<r}\operatorname{Cov}\!\left[c_{q,t}(N),c_{r,t}(N)\right].
+\end{equation}
+Let $\mathcal{K}$ collect the diagonal terms
+$C_{qq}(N)=\operatorname{Var}[c_{q,t}(N)]$ and the doubled off-diagonal
+terms
+$C_{qr}(N)=2\operatorname{Cov}[c_{q,t}(N),c_{r,t}(N)]$ for $q<r$. Then
+\begin{equation}
+\label{eq:component_sum}
+    V(N)=\sum_{k\in\mathcal{K}}C_k(N).
+\end{equation}
+Diagonal components are non-negative, whereas covariance components may
+have either sign. The component universe $\mathcal{K}$ is assumed to
+retain a comparable meaning at the population levels being contrasted.
+
+For $N_0,N_1>0$, $N_0\neq N_1$, and positive aggregate variance at both
+levels, define the finite-interval variance elasticity
+\begin{equation}
+\label{eq:direct_alpha}
+    \widehat{\alpha}(N_0,N_1)
+    =
+    -\frac{
+        \log V(N_1)-\log V(N_0)
+    }{
+        \log N_1-\log N_0
+    }.
+\end{equation}
+For $a,b>0$, let
+\begin{equation}
+\label{eq:log_mean}
+    L(a,b)
+    =
+    \begin{cases}
+        \displaystyle\frac{a-b}{\log a-\log b}, & a\neq b,\\[1em]
+        a, & a=b,
+    \end{cases}
+\end{equation}
+be the logarithmic mean.
+
+\begin{proposition}[Exact finite-interval decomposition]
+\label{prop:exact_decomposition}
+For each $k\in\mathcal{K}$, define
+\begin{equation}
+\label{eq:component_alpha_contribution}
+    \widehat{\alpha}^{\,C}_k(N_0,N_1)
+    =
+    -\frac{
+        C_k(N_1)-C_k(N_0)
+    }{
+        L\!\left(V(N_1),V(N_0)\right)
+        \left[\log N_1-\log N_0\right]
+    }.
+\end{equation}
+Then
+\begin{equation}
+\label{eq:exact_alpha_decomposition}
+    \widehat{\alpha}(N_0,N_1)
+    =
+    \sum_{k\in\mathcal{K}}
+    \widehat{\alpha}^{\,C}_k(N_0,N_1).
+\end{equation}
+The identity remains valid when individual covariance components are
+negative.
+\end{proposition}
+
+\begin{proof}
+Equation~\eqref{eq:component_sum} implies
+\begin{equation}
+    \sum_{k\in\mathcal{K}}
+    \left[C_k(N_1)-C_k(N_0)\right]
+    =V(N_1)-V(N_0).
+\end{equation}
+Summing equation~\eqref{eq:component_alpha_contribution} over $k$ and
+using
+\begin{equation}
+    \frac{V(N_1)-V(N_0)}{L(V(N_1),V(N_0))}
+    =\log V(N_1)-\log V(N_0)
+\end{equation}
+produces equation~\eqref{eq:direct_alpha} exactly.
+\end{proof}
+
+The decomposition attributes the aggregate elasticity to changes in the
+underlying variance and covariance components without requiring their
+individual logarithms. Signed covariance terms therefore enter directly,
+provided total variance remains positive. The result is exact for each
+finite interval and does not require a global power law. A regression
+coefficient estimated over many population levels may still provide a
+useful summary, but it averages interval-specific elasticities whose
+component weights can change across the fitted range. The decomposition
+therefore distinguishes an accounting identity from a parametric claim:
+it reconstructs what drives the observed change in aggregate variance
+without assuming that one invariant exponent governs every scale. In the
+differentiable limit,
+\begin{equation}
+\label{eq:local_signed_decomposition}
+    \alpha_{\mathrm{eff}}(N)
+    =-
+    \frac{d\log V(N)}{d\log N}
+    =-
+    \sum_{k\in\mathcal{K}}
+    \frac{N C_k'(N)}{V(N)}.
+\end{equation}
+If every component is positive, defining
+$\alpha_k(N)=-d\log C_k(N)/d\log N$ gives
+\begin{equation}
+\label{eq:weighted_local_alpha}
+    \alpha_{\mathrm{eff}}(N)
+    =
+    \sum_{k\in\mathcal{K}}
+    \frac{C_k(N)}{V(N)}\alpha_k(N).
+\end{equation}
+This resembles a weighted average, but its weights generally vary with
+$N$. A fixed average of local exponents arises only under additional
+restrictions, such as common component elasticities or contribution
+shares that remain invariant along the population path. When positive
+components decay at different power-law rates, their shares change with
+$N$ and the slowest-decaying component eventually dominates. With signed
+covariance components the normalized contributions need not be
+non-negative, so the representation is not a convex combination and the
+aggregate elasticity need not lie within the range of the diagonal
+elasticities. Covariance is therefore not merely a correction to the
+level of aggregate variance; its own scale dependence can determine the
+limiting diversification rate.
+
+Comparability across scales is substantive. If parts appear, disappear,
+or change meaning between $N_0$ and $N_1$, the measured elasticity may
+combine diversification with composition, partition, or dependence
+changes. The identity remains valid only after those changes are
+represented through a common accounting structure.
+
+\section{Why concentration does not identify volatility scaling}
+\label{sec:concentration_scaling}
+
+Consider the weighted aggregate
+\begin{equation}
+\label{eq:weighted_aggregate}
+    X_t(N)
+    =
+    \sum_{i=1}^{N}w_i(N)\varepsilon_{i,t}(N),
+    \qquad
+    \sum_{i=1}^{N}w_i(N)=1.
+\end{equation}
+For equal weights, $w_i(N)=1/N$, the concentration path is
+\begin{equation}
+\label{eq:equal_weight_concentration}
+    H(N)=\frac{1}{N}.
+\end{equation}
+Suppose first that shocks have unit variance and are mutually
+independent. Aggregate variance is then
+\begin{equation}
+\label{eq:iid_variance}
+    V_{\mathrm{iid}}(N)
+    =
+    \operatorname{Var}\!\left[
+        \frac{1}{N}\sum_{i=1}^{N}\varepsilon_{i,t}
+    \right]
+    =\frac{1}{N},
+\end{equation}
+and its local variance elasticity is
+\begin{equation}
+    \alpha_{\mathrm{iid}}(N)=1.
+\end{equation}
+
+Now retain the same weights and marginal variances but impose a common
+pairwise correlation $\rho\in(0,1)$. Aggregate variance becomes
+\begin{align}
+\label{eq:correlated_variance}
+    V_{\rho}(N)
+    &=
+    \frac{1}{N^2}\left[N+\rho N(N-1)\right]
+    \nonumber\\
+    &=
+    \rho+\frac{1-\rho}{N},
+\end{align}
+with local elasticity
+\begin{equation}
+\label{eq:correlated_alpha}
+    \alpha_{\rho}(N)
+    =
+    \frac{1-\rho}{\rho N+1-\rho}.
+\end{equation}
+The independent aggregate continues to diversify at rate $N^{-1}$,
+whereas the correlated aggregate approaches the variance floor
+$\lim_{N\to\infty}V_{\rho}(N)=\rho$ and
+$\lim_{N\to\infty}\alpha_{\rho}(N)=0$.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[
+        width=0.88\linewidth
+    ]{figures/figure_1_concentration_is_not_scaling.pdf}
+    \caption{
+    Equal concentration does not imply equal volatility scaling.
+    Both populations have concentration $H(N)=1/N$. Aggregate variance
+    declines as $1/N$ under independent shocks but approaches a positive
+    floor when shocks share a common correlation component.
+    }
+    \label{fig:concentration_scaling}
+\end{figure}
+
+The two economies have the same number of units, weights, Herfindahl
+index, effective number of firms, and entire concentration path. Yet they
+have different variance paths and limiting elasticities. The missing
+information is not a refinement of concentration: it is the
+scale-dependent variance--covariance structure of the contributions.
+This distinction also rules out a common empirical shortcut. Estimating a
+power law for $H(N)$ and interpreting its slope as the population exponent
+of aggregate variance is valid only after the micro-variance and
+covariance terms have been shown to be scale neutral. Concentration and
+aggregate-volatility scaling are therefore different estimands even when
+they coincide under the independent homogeneous benchmark.
+
+This result qualifies rather than overturns the granular mechanism. The
+presence of large firms may still make weighted idiosyncratic shocks
+quantitatively important. What does not follow is that the population
+elasticity of aggregate variance can be recovered from the firm-size
+distribution alone. The Herfindahl connection is conditional on stable
+homogeneous shock variances, independence, and a coherent population
+path. Relaxing those conditions does not merely add noise around the
+granular prediction; it changes the estimand that concentration can
+identify.
+
+\section{Deterministic computational verification}
+\label{sec:computational_verification}
+
+We verify the variance and scaling identities using deterministic
+finite-sample constructions rather than Monte Carlo approximations. For
+$N\in\{4,8,16,32,64\}$, we construct contribution panels with $T=256$
+observations and fixed seed $20260723$. Centered random matrices are
+orthogonalized by QR decomposition and scaled to have identity sample
+covariance under $ddof=1$. Cholesky transformations then impose known
+target covariance matrices, making measured and designed moments agree
+up to floating-point precision.
+
+The first construction reproduces the independent and correlated
+systems in Figure~\ref{fig:concentration_scaling}. Two additional
+constructions contain heterogeneous diagonal components, first without
+and then with a signed covariance contribution. At each $N$, aggregate
+variance is measured directly from the summed contribution series and
+reconstructed from diagonal variances and doubled covariance terms. The
+finite-interval elasticity is then computed directly from adjacent
+aggregate variances and reconstructed through
+Proposition~\ref{prop:exact_decomposition}.
+
+\begin{figure}[t]
+    \centering
+    \begin{minipage}{0.49\linewidth}
+        \centering
+        \includegraphics[
+            width=\linewidth
+        ]{figures/figure_2_direct_vs_reconstructed_alpha.pdf}
+
+        \textbf{(a) Direct and reconstructed elasticity}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.49\linewidth}
+        \centering
+        \includegraphics[
+            width=\linewidth
+        ]{figures/figure_3_alpha_component_contributions.pdf}
+
+        \textbf{(b) Signed component contributions}
+    \end{minipage}
+    \caption{
+    Exact reconstruction of aggregate variance scaling. Panel~(a)
+    compares the directly measured finite-interval elasticity with its
+    reconstruction. Panel~(b) separates diagonal and signed covariance
+    contributions. Differences are at floating-point precision.
+    }
+    \label{fig:alpha_verification}
+\end{figure}
+
+The maximum absolute residual is $4.441\times10^{-16}$ for the variance
+identity and $1.221\times10^{-15}$ for the scaling identity; the largest
+discrepancy between designed and measured covariance components is
+$5.551\times10^{-16}$. These calculations verify the implementation and
+numerical consistency of the accounting chain. They do not constitute
+empirical evidence about the scaling behavior of any particular
+economy.
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+Concentration locates aggregate exposure; it does not generally identify
+how aggregate variance changes as the population expands. The
+Herfindahl connection requires a stable homogeneous variance structure,
+restricted covariance, and a coherent population path. We provide an
+exact finite-interval decomposition that attributes the aggregate
+variance elasticity to changes in diagonal and signed covariance
+components without logging the components themselves. The result
+preserves the central granular insight while defining its boundary: the
+firm-size distribution can make large firms important, but it is not a
+sufficient statistic for population scaling. The decomposition supplies
+a transparent accounting contract for empirical micro-to-macro work,
+shifting the empirical task from reading an exponent off the size
+distribution to measuring how variance and covariance contributions
+change along an explicit population path.
+
+% ------------------------------------------------------------------
+% Declarations
+% ------------------------------------------------------------------
+
+\section*{Funding}
+
+This research did not receive any specific grant from funding agencies
+in the public, commercial, or not-for-profit sectors.
+
+\section*{Declaration of competing interest}
+
+The author declares that he has no known competing financial interests
+or personal relationships that could have appeared to influence the
+work reported in this paper.
+
+\section*{Data and code availability}
+
+No empirical data were used in this study. Source code, deterministic
+computational constructions, tests, and generated verification artifacts
+will be made available in a public repository.
+
+\section*{
+Declaration of generative AI and AI-assisted technologies in the
+writing process
+}
+
+During the preparation of this work, the author used OpenAI ChatGPT and
+Codex to assist with research organization, software implementation,
+adversarial checking, and language revision. The author reviewed and
+verified the mathematical derivations, computational outputs,
+references, and final text, edited the resulting material as needed,
+and takes full responsibility for the content of the publication.
+
+% ------------------------------------------------------------------
+% References
+% ------------------------------------------------------------------
+
+\bibliographystyle{elsarticle-harv}
+\bibliography{references}
+
+\end{document}
