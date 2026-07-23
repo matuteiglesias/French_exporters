@@ -1,6 +1,6 @@
 schema_version: "0.1"
-state_updated_at: "2026-07-22T20:47:41-03:00"
-state_updated_by: "Steward evening close"
+state_updated_at: "2026-07-23T15:40:00-03:00"
+state_updated_by: "Steward integration of completed PI research hour"
 
 programme:
   name: "Economics of Aggregation, Scale, and Measurement"
@@ -8,7 +8,7 @@ programme:
   active_front:
     id: "P2"
     title: "Concentration Is Not the Scaling Exponent"
-    state: "evidence_recovery"
+    state: "formal_reconstruction_and_lineage_closure"
   reserve_front:
     id: "P3"
     title: "Administrative Areas as Implicit Spatial Kernels"
@@ -17,30 +17,55 @@ programme:
 pi_evidence:
   original_data_available: true
   data_access_now: false
-  note: >
-    The PI possesses the original data. Current work remains deliberately
-    data-free; data availability is not the active blocker.
+  completed_research_hour:
+    date: "2026-07-23"
+    status: "COMPLETED_EVIDENCE_PRODUCED"
+    stop_condition_reached: true
+    data_opened: false
+    notebooks_executed: false
+    refactor_started: false
+    manuscript_expansion_started: false
+  accepted_direction:
+    - >
+      Do not force one uniquely authoritative scalar alpha independent of
+      segment and scale; distinguish local part alphas from the effective
+      whole-population alpha.
+    - >
+      Treat concentration as a level and alpha as a scaling elasticity.
+    - >
+      Retain variance and covariance contributions in the local-to-global
+      aggregation rule.
+    - >
+      Use a direct-versus-reconstructed alpha comparison as the central
+      empirical adjudication.
+  scientific_boundary: >
+    These are accepted PI research directions. The heterogeneous-alpha formula,
+    covariance-adjusted reconstruction, empirical interpretation, and novelty
+    remain in REVIEW until validated.
 
 current_bottleneck: >
-  The code neighborhood is inventoried, but no inspected implementation maps an
-  authoritative fitted variance/population slope to the reported positive export
-  alpha of approximately 0.48-0.50. Dependent variable, partition rule, fitting
-  sample, weighting, uncertainty, output family, and sign mapping remain unresolved.
+  The formal argument is coherent, but three provenance breaks prevent empirical
+  validation: the exact producer and schema of the exp_var_* families, the final
+  empirical export-alpha estimator including sign and variance convention, and
+  a common-N variance-accounting panel containing total, diagonal, covariance,
+  and part-population terms.
 
 current_play:
-  mode: "CONSOLIDATE"
-  lead_player: "Steward"
+  mode: "BUILD"
+  lead_player: "Reproducibility Engineer"
   supporting_players:
-    - "Reproducibility Engineer"
     - "Archivist"
     - "Methodkeeper"
   objective: >
-    Inspect and classify the day's merged infrastructure and code-archaeology
-    outputs, freeze the bottleneck, and leave tomorrow's restart pointer.
+    Confirm or reject Experiment 4 as the producer of every exp_var_* family
+    consumed by Sigma vs log(n), and map filenames, schemas, parameter grids,
+    repetitions, seeds, and consumer expectations without executing notebooks.
   completion_condition: >
-    Fast Git has an evidence-backed operational classification, scientific
-    artifacts retain REVIEW status, and the next PI gate is explicit.
-  status: "ACHIEVED"
+    A producer-lineage report and schema manifest pass engineering checks; every
+    relevant consumer is mapped to an exact producer output or a precise MISSING
+    break; no scientific choice is made.
+  status: "READY"
+  task_packet: "research/codex/2026-07-23_trace_exp_var_producer_task_v0_1.md"
 
 repository:
   name: "matuteiglesias/French_exporters"
@@ -48,45 +73,51 @@ repository:
   governance:
     - "research/governance/README.md"
     - "AGENTS.md"
-  evening_close: "research/plays/2026-07-22_PM_steward_close_v0_1.md"
-  merged_today:
-    - pr: 3
-      title: "Map export-alpha code roles before data execution"
-      result: "MERGED"
-    - pr: 4
-      title: "Emergency fast Git iteration path"
-      result: "MERGED"
-    - pr: 5
-      title: "Add emergency fast Git iteration workflow"
-      result: "MERGED"
-    - pr: 6
-      title: "Add export-alpha code archaeology manifest and estimator snippets (REVIEW)"
-      result: "MERGED"
+  operational_guides:
+    - "docs/FAST_GIT_WORKFLOW.md"
+    - "research/guides/french_exporters_notebook_atlas_v0_1.md"
+  latest_integration_branch: "agent/integrate-export-alpha-hour"
+  latest_play: "research/plays/2026-07-23_PM_integrate_export_alpha_hour_v0_1.md"
 
 infrastructure_evidence:
   fast_git_workflow:
     classification: "ACCEPTED_FOR_OPERATIONAL_USE"
     acceptance_scope: "clone, checkout, and bounded sync workflow only"
     evidence_artifact: "research/artifacts/git_repository_iteration_report_v0_1.md"
-    scripts:
-      - "scripts/git_fast_clone.sh"
-      - "scripts/git_fast_sync.sh"
-      - "scripts/verify_fast_git_workflow.sh"
-    documentation: "docs/FAST_GIT_WORKFLOW.md"
-    measured_result:
-      clone_elapsed_seconds: 2
-      sync_elapsed_seconds: 1
-      git_directory_bytes_after_sync: 3801088
-      working_tree_bytes: 9347072
-      partial_clone_active: true
-      shallow: true
-      sparse_checkout_active: true
-      lfs_payload_objects: 0
-      lfs_payload_bytes: 0
-      integration_verifier: "PASS"
+    integration_verifier: "PASS"
     boundary: >
       This acceptance does not validate scientific notebooks, data, estimators,
       or results. History rewrite and repository splitting remain unauthorized.
+
+formal_framework:
+  classification: "REVIEW"
+  primary_integration_artifact: "research/artifacts/export_alpha_framework_integration_v0_1.md"
+  research_hour_close: "research/artifacts/export_alpha_research_hour_close_v0_1.md"
+  source_manifest: "research/artifacts/export_alpha_research_hour_source_manifest_v0_1.md"
+  source_documents:
+    synthesis_map:
+      expected_path: "research/artifacts/export_alpha_synthesis_map_v0_1.md"
+      sha256: "b75825d18d19bc7f6e96c9680d8df2b1fb43c285709c9e159c0af813e915c517"
+      repository_status: "PENDING_LOSSLESS_IMPORT"
+    formal_compendium:
+      expected_path: "research/artifacts/export_alpha_formal_framework_compendium_v0_1.md"
+      sha256: "e1adf29cf5affafd3c3e4e92f61ec931de9466fab701f1e50e940b65e48c7173"
+      repository_status: "PENDING_LOSSLESS_IMPORT"
+  provenance_classes:
+    thesis_backed: "[T]"
+    derived_completion: "[D]"
+    caution: "[C]"
+  central_object: >
+    alpha_eff(N) is the negative log derivative of aggregate variance with
+    respect to total population, retaining all scale-dependent diagonal and
+    signed covariance contributions.
+  strongest_supported_working_synthesis: >
+    The whole-population export alpha is a covariance-adjusted,
+    contribution-weighted, scale-dependent effective elasticity. It reduces to
+    a common part alpha under common-exponent assumptions and approximates a
+    contribution-weighted combination of heterogeneous part alphas only under
+    restrictive conditions.
+  validation_status: "NOT_EMPIRICALLY_VALIDATED"
 
 scientific_evidence:
   code_archaeology:
@@ -102,26 +133,84 @@ scientific_evidence:
       notebooks_executed: false
       data_opened: false
       scientific_validation: false
-    principal_finding: >
-      No extracted snippet names alpha or defines the mapping from a fitted slope
-      to the reported export-alpha claim.
+  materially_supported_chain:
+    - "thesis micro-moment formulas"
+    - "power-sum experiments"
+    - "equal-value group construction"
+    - "simulated or empirical group variances"
+    - "variance-versus-population figures"
+  incomplete_chain:
+    - "verified exp_var producer"
+    - "fitted local bin alphas"
+    - "common-N covariance elasticities"
+    - "reconstructed aggregate alpha"
+    - "reported empirical export alpha"
 
 claim_evidence:
   claim_id: "AGG-ALPHA-EXPORT"
   reported_alpha: "approximately 0.48-0.50"
   reproduced_alpha: null
-  status: "BLOCKED"
-  blocker: >
-    Authoritative estimator lineage and estimand contract remain unresolved.
+  status: "BLOCKED_EMPIRICAL_REPRODUCTION"
+  formal_interpretation_status: "REVIEW_FRAMEWORK_AVAILABLE"
+  variance_convention:
+    working_evidence: "thesis documentation uses log variance versus log population"
+    status: "REVIEW_PENDING_FINAL_ESTIMATOR"
+  sign_convention: "UNRESOLVED"
   data_dependency_status: "AVAILABLE_LATER_NOT_CURRENT_BLOCKER"
-  retained_choices_for_PI:
-    - "variance versus standard deviation"
-    - "slope sign and mapping to positive alpha"
-    - "authoritative generator/output family"
-    - "group and partition construction"
-    - "fitting sample and weighting"
-    - "uncertainty estimator"
-    - "empirical versus simulated shocks"
+  decisive_missing_links:
+    - "exact exp_var_* producer and schema"
+    - "final empirical estimator and output"
+    - "common-N variance-accounting panel"
+  central_falsifiable_test:
+    direct: "-Delta log V_X / Delta log N"
+    diagonal_only: "sum_q (A_q / V_X) a_q"
+    full: "diagonal plus signed covariance contribution elasticities"
+    interpretation:
+      - "full succeeds and diagonal fails: covariance is necessary"
+      - "both succeed: covariance is negligible over the tested range"
+      - "neither succeeds: inconsistent estimands, missing components, composition drift, or no stable scalar alpha"
+    tolerance_status: "MUST_BE_FROZEN_BEFORE_EXECUTION"
+
+publication_path:
+  current_stage: "FOUNDATION_AND_FORMAL_RECOVERY"
+  wip_rule: "one active research-output front"
+  gates:
+    - id: "G0"
+      name: "formal recovery"
+      status: "ACHIEVED_IN_REVIEW"
+    - id: "G1"
+      name: "lineage closure"
+      status: "ACTIVE"
+    - id: "G2"
+      name: "estimand and test freeze"
+      status: "WAITING"
+    - id: "G3"
+      name: "direct empirical reproduction"
+      status: "WAITING"
+    - id: "G4"
+      name: "micro-to-macro reconstruction"
+      status: "WAITING"
+    - id: "G5"
+      name: "adversarial validation"
+      status: "WAITING"
+    - id: "G6"
+      name: "claim and novelty freeze"
+      status: "WAITING"
+    - id: "G7"
+      name: "manuscript and replication package"
+      status: "WAITING"
+    - id: "G8"
+      name: "venue selection and submission"
+      status: "WAITING"
+  provisional_paper_nucleus: >
+    Concentration is a state variable, while the variance-decay exponent is a
+    scale-dependent elasticity of all variance and covariance contributions.
+    Heterogeneous local alphas can combine coherently at the aggregate level,
+    but generally through contribution weights and covariance corrections rather
+    than a fixed average.
+  claim_boundary: >
+    This is a working paper nucleus only. No novelty, empirical validation,
+    causal interpretation, or publication claim is accepted.
 
 artifact_states:
   accepted_for_operational_use:
@@ -130,49 +219,74 @@ artifact_states:
     - "scripts/verify_fast_git_workflow.sh"
     - "docs/FAST_GIT_WORKFLOW.md"
     - "research/artifacts/git_repository_iteration_report_v0_1.md"
+  accepted_pi_decisions:
+    - "local-to-global alpha reconstruction is the central scientific target"
+    - "direct-versus-reconstructed alpha is the next empirical adjudication"
+    - "P2 remains the only active research-output front"
+    - "publication work remains gated behind reproduction and validation"
   review:
     - "research/artifacts/export_alpha_code_role_manifest_v0_1.csv"
     - "research/artifacts/export_alpha_estimator_snippets_v0_1.md"
     - "research/state/aggregation_reproducibility_inventory_v0_1.csv"
-    - "research/plays/2026-07-22_PM_steward_close_v0_1.md"
+    - "research/guides/french_exporters_notebook_atlas_v0_1.md"
+    - "research/artifacts/export_alpha_research_hour_close_v0_1.md"
+    - "research/artifacts/export_alpha_framework_integration_v0_1.md"
+    - "research/artifacts/export_alpha_research_hour_source_manifest_v0_1.md"
+    - "research/plays/2026-07-23_PM_integrate_export_alpha_hour_v0_1.md"
+  pending_lossless_import:
+    - "research/artifacts/export_alpha_synthesis_map_v0_1.md"
+    - "research/artifacts/export_alpha_formal_framework_compendium_v0_1.md"
+  blocked:
+    - "reproduced empirical export alpha"
+    - "common-N direct-versus-reconstructed test"
+    - "paper-level claim freeze"
   accepted_scientific_results: []
 
 pi_hour:
-  planned_hour_executed_as_written: false
-  classification: "PARTIAL_ADVANCE_NOT_A_COMPLETED_PI_HOUR"
-  meaningful_actions:
-    - "confirmed possession of original data"
-    - "directed a data-free phase"
-    - "prioritized repository latency remediation"
-    - "reviewed Codex estimator snippets"
-  remaining_objective: >
-    Identify or explicitly shortlist the authoritative estimator lineage and
-    write the estimand contract without loading data.
+  date: "2026-07-23"
+  planned_hour_executed_as_written: true
+  classification: "COMPLETED_EVIDENCE_PRODUCED"
+  primary_result: >
+    Formal and evidentiary reconstruction of the relationship between local
+    subpopulation alphas and the effective whole-population alpha.
+  evidence:
+    - "research/artifacts/export_alpha_research_hour_close_v0_1.md"
+    - "research/artifacts/export_alpha_framework_integration_v0_1.md"
+    - "research/artifacts/export_alpha_research_hour_source_manifest_v0_1.md"
+  exact_remaining_breaks:
+    - "exp_var lineage"
+    - "final direct estimator"
+    - "common-N accounting panel"
 
 next_pointer:
-  first_question: >
-    Was the approximately 0.48-0.50 number an exponent for variance or for
-    standard deviation, and which surviving output is recognized as its source?
   action: >
-    Open only the estimator snippets and code-role manifest; record one preferred
-    lineage or an explicit unresolved shortlist plus a five-to-ten-line estimand
-    definition before assigning further Codex work.
+    Run research/codex/2026-07-23_trace_exp_var_producer_task_v0_1.md against
+    current master, beginning with Experiment 4 and inspecting Experiment 3 only
+    for consumer families that Experiment 4 cannot satisfy.
+  completion_condition: >
+    Every relevant exp_var_* consumer is mapped to an exact producer output or
+    a precise MISSING break, with schema, parameters, repetitions, and seed
+    status recorded.
   stop_condition: >
-    Stop when one lineage is selected or the exact remaining ambiguity is recorded.
+    Stop after the lineage report and schema manifest pass engineering checks;
+    do not execute notebooks, open data, or implement the estimator.
 
 wip:
   active_research_output_fronts: 1
-  next_executor: "PI, then Codex/Reproducibility Engineer"
+  active_front: "P2"
+  next_executor: "Codex / Reproducibility Engineer under bounded task"
 
 close_instruction:
-  do_not_reopen_tonight: true
+  intervention_status: "READY"
   do_not_open:
     - "confidential source data"
-    - "P3"
+    - "notebook execution"
+    - "final estimator implementation"
+    - "robustness grid"
+    - "literature novelty scan"
     - "manuscript-wide rewrite"
     - "journal targeting"
-    - "repository-wide notebook cleanup"
-    - "environment modernization"
-    - "new robustness tests"
+    - "P3"
+    - "repository-wide cleanup"
     - "history rewrite"
     - "repository splitting"
