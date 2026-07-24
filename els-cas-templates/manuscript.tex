@@ -1,7 +1,13 @@
-\documentclass[preprint,12pt,authoryear]{elsarticle}
+\documentclass[a4paper,fleqn]{cas-dc}
 
 % ------------------------------------------------------------------
-% Packages
+% Citation style
+% ------------------------------------------------------------------
+
+\usepackage[authoryear,longnamesfirst]{natbib}
+
+% ------------------------------------------------------------------
+% Mathematical and typographical packages
 % ------------------------------------------------------------------
 
 \usepackage{amsmath}
@@ -11,23 +17,15 @@
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{microtype}
-\usepackage[
-    colorlinks=true,
-    allcolors=blue
-]{hyperref}
+\usepackage{xspace}
 
 % ------------------------------------------------------------------
 % Theorem environments
 % ------------------------------------------------------------------
 
 \newtheorem{proposition}{Proposition}
-
-% ------------------------------------------------------------------
-% Journal and bibliography
-% ------------------------------------------------------------------
-
-\journal{Economics Letters}
-\biboptions{authoryear,round}
+\newtheorem{corollary}{Corollary}
+\newtheorem{remark}{Remark}
 
 % ------------------------------------------------------------------
 % Document
@@ -35,21 +33,65 @@
 
 \begin{document}
 
-\begin{frontmatter}
+\let\WriteBookmarks\relax
+\def\floatpagepagefraction{1}
+\def\textpagefraction{0.001}
 
-\title{
+% ------------------------------------------------------------------
+% Running title and author
+% ------------------------------------------------------------------
+
+\shorttitle{Concentration Is Not Scaling}
+\shortauthors{M. Iglesias}
+
+% ------------------------------------------------------------------
+% Title
+% ------------------------------------------------------------------
+
+\title[mode=title]{
 Concentration Is Not Scaling:
 An Exact Decomposition of Aggregate Variance Elasticities
 }
 
-\author[aff1]{Matías Iglesias\corref{cor1}}
-\cortext[cor1]{Corresponding author}
+% ------------------------------------------------------------------
+% Author
+% ------------------------------------------------------------------
+
+\author[1]{Matías Iglesias}
+\cormark[1]
+
 \ead{mniglesias@dc.uba.ar}
 
-\address[aff1]{
-Departamento de Computación, Facultad de Ciencias Exactas y Naturales,
-Universidad de Buenos Aires, Buenos Aires, Argentina
+\credit{
+Conceptualization,
+Methodology,
+Formal analysis,
+Software,
+Validation,
+Visualization,
+Writing -- Original Draft,
+Writing -- Review \& Editing
 }
+
+% ------------------------------------------------------------------
+% Affiliation
+% ------------------------------------------------------------------
+
+\affiliation[1]{
+    organization={
+        Departamento de Computación,
+        Facultad de Ciencias Exactas y Naturales,
+        Universidad de Buenos Aires
+    },
+    city={Buenos Aires},
+    country={Argentina}
+}
+
+\cortext[cor1]{Corresponding author}
+
+% ------------------------------------------------------------------
+% Abstract
+% ------------------------------------------------------------------
 
 \begin{abstract}
 Granular models relate aggregate volatility to the concentration of
@@ -70,19 +112,40 @@ concentration-based granular reasoning and supplies an accounting
 framework for micro-to-macro analyses of diversification.
 \end{abstract}
 
-\begin{keyword}
+% ------------------------------------------------------------------
+% Highlights
+% ------------------------------------------------------------------
+
+\begin{highlights}
+\item Concentration does not identify aggregate-volatility scaling.
+\item Variance elasticities admit an exact finite-interval decomposition.
+\item Signed covariance enters without logarithms of component values.
+\item Equal concentration paths can imply different diversification rates.
+\item Direct and reconstructed elasticities agree to machine precision.
+\end{highlights}
+
+% ------------------------------------------------------------------
+% Keywords and classification
+% ------------------------------------------------------------------
+
+\begin{keywords}
 aggregate volatility
 \sep concentration
 \sep diversification
 \sep variance decomposition
 \sep covariance
 \sep scaling elasticity
+\end{keywords}
 
-\medskip
-\textit{JEL classification:} C02, C10, D20
-\end{keyword}
+\nonumnote{
+JEL classification: C02, C10, D20.
+}
 
-\end{frontmatter}
+% ------------------------------------------------------------------
+% Generate title
+% ------------------------------------------------------------------
+
+\maketitle
 
 % ------------------------------------------------------------------
 % Main text
