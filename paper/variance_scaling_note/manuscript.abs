@@ -1,0 +1,16 @@
+Granular models relate aggregate volatility to the concentration of
+economic weights. This connection is exact only under restrictive
+assumptions on marginal shock variances, dependence, and population
+composition. Concentration is a state variable, whereas volatility
+scaling is an elasticity defined along a population path. We show that
+identical Herfindahl paths can generate different aggregate-variance
+elasticities and derive an exact finite-interval decomposition of that
+elasticity into changes in diagonal variance and signed covariance
+components. The decomposition uses the logarithmic mean of total
+variance and requires no logarithm of individual components. A
+contribution-weighted average of component elasticities emerges only
+under positivity and comparability conditions. Deterministic
+constructions verify the direct and reconstructed elasticities to
+machine precision. The result clarifies the boundary of
+concentration-based granular reasoning and supplies an accounting
+framework for micro-to-macro analyses of diversification.
