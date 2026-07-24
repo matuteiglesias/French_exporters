@@ -1,4 +1,4 @@
-"""Create deterministic algebraic demonstrations of aggregation_lab identities."""
+"""Create deterministic algebraic variance-scaling demonstrations (v0.2)."""
 
 from pathlib import Path
 
@@ -9,233 +9,305 @@ import pandas as pd
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-from aggregation_lab import (
-    build_variance_components,
-    check_scaling_identity,
-    check_variance_identity,
-)
+from aggregation_lab import check_scaling_identity
 
 N_VALUES = np.array([4, 8, 16, 32, 64], dtype=int)
-TIME_COUNT = 256
-DDOF = 1
-SEED = 20260723
-VARIANCE_TOLERANCE = 1e-12
-SCALING_TOLERANCE = 1e-10
-COVARIANCE_TOLERANCE = 1e-12
-ARTIFACT_DIR = Path("research/artifacts/variance_scaling_demo_v0_1")
+RHO = 0.15
+RTOL = 1e-12
+ATOL = 1e-12
+ARTIFACT_DIR = Path("research/artifacts/variance_scaling_demo_v0_2")
+
+SCENARIOS = {
+    "scenario_1_iid": {
+        "scenario_label": "Equal weights, independent shocks",
+        "scientific_purpose": "Benchmark equal-concentration variance decay under independence",
+        "population_scale_definition": "N is number of equal-weight units",
+        "component_universe": "Firm-level contributions; decomposition uses diagonal/off-diagonal totals",
+        "concentration_formula": "1/N", "variance_formula": "1/N",
+        "covariance_structure": "Independent shocks (rho=0)",
+        "decomposition_level": "Grouped variance categories", "main_text_status": "MAIN",
+    },
+    "scenario_1_rho_0_15": {
+        "scenario_label": "Equal weights, equicorrelated shocks",
+        "scientific_purpose": "Show identical concentration with slower variance decay",
+        "population_scale_definition": "N is number of equal-weight units",
+        "component_universe": "Firm-level contributions; decomposition uses diagonal/off-diagonal totals",
+        "concentration_formula": "1/N", "variance_formula": "0.15 + 0.85/N",
+        "covariance_structure": "Equicorrelation rho=0.15",
+        "decomposition_level": "Grouped variance categories", "main_text_status": "MAIN",
+    },
+    "scenario_2_heterogeneous_independent": {
+        "scenario_label": "Heterogeneous independent components",
+        "scientific_purpose": "Show changing aggregate alpha from changing component contributions",
+        "population_scale_definition": "N is the population scale in both analytic component paths",
+        "component_universe": "Two independent variance components and a zero covariance remainder",
+        "concentration_formula": "not applicable: analytic component demonstration",
+        "variance_formula": "N^-0.9 + 0.4 N^-0.3",
+        "covariance_structure": "Independent components; covariance remainder is zero",
+        "decomposition_level": "Analytic component categories", "main_text_status": "MAIN",
+    },
+}
+
+COMPONENTS = {
+    "scenario_1_iid": [
+        ("D_TOTAL", "Total diagonal variance", "diagonal_total", 1.0, lambda n: 1 / n),
+        ("B_TOTAL", "Total doubled covariance", "covariance_total", 2.0, lambda n: 0.0),
+    ],
+    "scenario_1_rho_0_15": [
+        ("D_TOTAL", "Total diagonal variance", "diagonal_total", 1.0, lambda n: 1 / n),
+        ("B_TOTAL", "Total doubled covariance", "covariance_total", 2.0, lambda n: RHO * (1 - 1 / n)),
+    ],
+    "scenario_2_heterogeneous_independent": [
+        ("A_FAST", "N^-0.9 component", "variance_component", 1.0, lambda n: n ** -0.9),
+        ("A_SLOW", "0.4 N^-0.3 component", "variance_component", 1.0, lambda n: 0.4 * n ** -0.3),
+        ("B_ZERO", "Numerical covariance remainder", "covariance_total", 2.0, lambda n: 0.0),
+    ],
+}
 
 
-def exact_identity_basis(time_count, column_count, *, seed, ddof):
-    """Return centered columns with exact sample covariance identity."""
-    generator = np.random.default_rng(seed)
-    raw = generator.normal(size=(time_count, column_count))
-    centered = raw - raw.mean(axis=0, keepdims=True)
-    orthogonal, _ = np.linalg.qr(centered, mode="reduced")
-    return orthogonal[:, :column_count] * np.sqrt(time_count - ddof)
+def component_row(scenario_id, population, component_id, component_label, component_kind, multiplier, value):
+    """Return one analytic variance-accounting row with scientific identifiers."""
+    return {
+        "scenario_id": scenario_id, "N": int(population), "left_part": component_id,
+        "right_part": component_id, "term_type": "covariance" if multiplier == 2 else "variance",
+        "covariance": value / multiplier, "multiplier": multiplier, "variance_term": value,
+        "n_observations": np.nan, "ddof": np.nan, "component_label": component_label,
+        "component_kind": component_kind,
+    }
 
 
-def panel_from_covariance(scenario_id, population, covariance, *, seed):
-    """Build an exact finite-sample contribution panel for a target covariance."""
-    part_count = covariance.shape[0]
-    basis = exact_identity_basis(TIME_COUNT, part_count, seed=seed, ddof=DDOF)
-    transformed = basis @ np.linalg.cholesky(covariance).T
-    records = [
-        {
-            "scenario_id": scenario_id,
-            "N": int(population),
-            "time": time,
-            "part": f"part_{part + 1:03d}",
-            "contribution": transformed[time, part],
-        }
-        for time in range(TIME_COUNT)
-        for part in range(part_count)
-    ]
-    return pd.DataFrame.from_records(records), transformed
+def build_analytic_accounting():
+    """Build the frozen v0.2 scenarios without simulation or source-data input."""
+    records = []
+    summaries = []
+    for scenario_id, definitions in COMPONENTS.items():
+        for population in N_VALUES:
+            terms = [
+                component_row(scenario_id, population, component_id, label, kind, multiplier, formula(population))
+                for component_id, label, kind, multiplier, formula in definitions
+            ]
+            variance = sum(term["variance_term"] for term in terms)
+            records.extend(terms)
+            summaries.append({"scenario_id": scenario_id, "N": int(population),
+                              "direct_variance": variance, "reconstructed_variance": variance,
+                              "residual": 0.0, "n_observations": np.nan, "ddof": np.nan})
+    return pd.DataFrame(records), pd.DataFrame(summaries)
 
 
-def scenario_one_covariance(population, rho):
-    unit_shock_covariance = (1.0 - rho) * np.eye(population) + rho * np.ones((population, population))
-    return unit_shock_covariance / population**2
+def scenario_metadata():
+    return pd.DataFrame.from_records(
+        [{"scenario_id": scenario_id, **metadata} for scenario_id, metadata in SCENARIOS.items()]
+    )
 
 
-def scenario_two_covariance(population):
-    return np.diag([population ** -0.9, 0.4 * population ** -0.3])
+def path_summary(components, variance_summary):
+    """Create the reader-facing N-level audit table from detailed components."""
+    totals = components.pivot_table(index=["scenario_id", "N"], columns="component_kind",
+                                    values="variance_term", aggfunc="sum", fill_value=0).reset_index()
+    paths = variance_summary.merge(totals, on=["scenario_id", "N"], how="left")
+    paths["concentration_H"] = np.where(
+        paths["scenario_id"].str.startswith("scenario_1"), 1 / paths["N"], np.nan
+    )
+    paths["expected_variance"] = paths["reconstructed_variance"]
+    paths["variance_residual"] = paths["direct_variance"] - paths["reconstructed_variance"]
+    paths["absolute_variance_residual"] = paths["variance_residual"].abs()
+    paths["diagonal_total"] = paths.get("diagonal_total", 0.0)
+    paths["covariance_total"] = paths.get("covariance_total", 0.0)
+    paths["covariance_share"] = paths["covariance_total"] / paths["direct_variance"]
+    columns = ["scenario_id", "N", "concentration_H", "expected_variance", "direct_variance",
+               "reconstructed_variance", "variance_residual", "absolute_variance_residual",
+               "diagonal_total", "covariance_total", "covariance_share", "n_observations", "ddof"]
+    return paths.loc[:, columns].sort_values(["scenario_id", "N"], kind="mergesort")
 
 
-def scenario_three_covariance(population):
-    covariance = 0.1 * population ** -0.2
-    return np.array([
-        [population ** -0.8, covariance],
-        [covariance, 0.8 * population ** -0.6],
-    ])
+def interval_summary(scaling_summary, paths):
+    """Create the reader-facing finite-interval contrast table for every scenario."""
+    levels = paths.loc[:, ["scenario_id", "N", "concentration_H", "direct_variance"]]
+    low = levels.rename(columns={"N": "N_low", "concentration_H": "H_low", "direct_variance": "variance_low"})
+    high = levels.rename(columns={"N": "N_high", "concentration_H": "H_high", "direct_variance": "variance_high"})
+    intervals = scaling_summary.merge(low, on=["scenario_id", "N_low"], how="left").merge(
+        high, on=["scenario_id", "N_high"], how="left"
+    )
+    intervals["N_midpoint"] = np.sqrt(intervals["N_low"] * intervals["N_high"])
+    intervals["log_N_ratio"] = np.log(intervals["N_high"] / intervals["N_low"])
+    intervals["concentration_alpha"] = -np.log(intervals["H_high"] / intervals["H_low"]) / intervals["log_N_ratio"]
+    intervals["alpha_residual"] = intervals["direct_alpha"] - intervals["reconstructed_alpha"]
+    intervals["absolute_alpha_residual"] = intervals["alpha_residual"].abs()
+    intervals["allowed_error"] = ATOL + RTOL * np.maximum(intervals["direct_alpha"].abs(), intervals["reconstructed_alpha"].abs())
+    intervals["normalized_error"] = intervals["absolute_alpha_residual"] / intervals["allowed_error"]
+    intervals["decomposition_status"] = np.where(intervals["absolute_alpha_residual"] <= intervals["allowed_error"], "PASS", "FAIL")
+    columns = ["scenario_id", "N_low", "N_high", "N_midpoint", "log_N_ratio", "H_low", "H_high",
+               "concentration_alpha", "variance_low", "variance_high", "direct_alpha", "reconstructed_alpha",
+               "alpha_residual", "absolute_alpha_residual", "allowed_error", "normalized_error", "decomposition_status"]
+    return intervals.loc[:, columns].sort_values(["scenario_id", "N_low"], kind="mergesort")
 
 
-def append_scenario(rows, covariance_checks, scenario_id, covariance_function, *, seed_offset):
-    for index, population in enumerate(N_VALUES):
-        target = covariance_function(int(population))
-        if np.any(np.linalg.eigvalsh(target) <= 0):
-            raise ValueError(f"target covariance is not positive definite for {scenario_id}, N={population}")
-        panel, values = panel_from_covariance(
-            scenario_id, population, target, seed=SEED + seed_offset + index
-        )
-        rows.append(panel)
-        measured = np.cov(values, rowvar=False, ddof=DDOF)
-        covariance_checks.append({
-            "scenario_id": scenario_id,
-            "check_type": "designed_covariance",
-            "N": int(population),
-            "N_low": np.nan,
-            "N_high": np.nan,
-            "direct_value": float(np.max(np.abs(measured - target))),
-            "reconstructed_value": 0.0,
-            "residual": float(np.max(np.abs(measured - target))),
-            "tolerance": COVARIANCE_TOLERANCE,
-            "status": "PASS" if np.max(np.abs(measured - target)) <= COVARIANCE_TOLERANCE else "FAIL",
-        })
+def component_interval_summary(scaling_components, intervals, components):
+    """Make signed alpha contributions self-describing and auditable."""
+    labels = components.loc[:, ["scenario_id", "left_part", "component_label", "component_kind", "multiplier"]].drop_duplicates()
+    output = scaling_components.merge(labels, on=["scenario_id", "left_part"], how="left")
+    output = output.merge(intervals.loc[:, ["scenario_id", "N_low", "N_high", "reconstructed_alpha"]],
+                          on=["scenario_id", "N_low", "N_high"], how="left")
+    output["alpha_share"] = output["alpha_contribution"] / output["reconstructed_alpha"]
+    output["component_sign_low"] = np.sign(output["component_low"]).astype(int)
+    output["component_sign_high"] = np.sign(output["component_high"]).astype(int)
+    output["log_elasticity_defined"] = (output["component_low"] > 0) & (output["component_high"] > 0)
+    output["numerical_zero"] = np.isclose(output["component_low"], 0.0, atol=ATOL) & np.isclose(output["component_high"], 0.0, atol=ATOL)
+    output = output.rename(columns={"left_part": "component_id"})
+    columns = ["scenario_id", "N_low", "N_high", "component_id", "component_label", "component_kind", "multiplier",
+               "component_low", "component_high", "delta_component", "alpha_contribution", "alpha_share",
+               "component_sign_low", "component_sign_high", "log_elasticity_defined", "numerical_zero"]
+    return output.loc[:, columns].sort_values(["scenario_id", "N_low", "component_id"], kind="mergesort")
 
 
-def make_checks(variance_summary, scaling_summary, covariance_checks):
-    checks = list(covariance_checks)
-    for row in variance_summary.itertuples(index=False):
-        checks.append({
-            "scenario_id": row.scenario_id,
-            "check_type": "variance_identity",
-            "N": row.N,
-            "N_low": np.nan,
-            "N_high": np.nan,
-            "direct_value": row.direct_variance,
-            "reconstructed_value": row.reconstructed_variance,
-            "residual": row.residual,
-            "tolerance": VARIANCE_TOLERANCE,
-            "status": "PASS" if abs(row.residual) <= VARIANCE_TOLERANCE else "FAIL",
-        })
-    for row in scaling_summary.itertuples(index=False):
-        checks.append({
-            "scenario_id": row.scenario_id,
-            "check_type": "scaling_identity",
-            "N": np.nan,
-            "N_low": row.N_low,
-            "N_high": row.N_high,
-            "direct_value": row.direct_alpha,
-            "reconstructed_value": row.reconstructed_alpha,
-            "residual": row.residual,
-            "tolerance": SCALING_TOLERANCE,
-            "status": "PASS" if abs(row.residual) <= SCALING_TOLERANCE else "FAIL",
-        })
-    return pd.DataFrame(checks).sort_values(
-        ["scenario_id", "check_type", "N", "N_low"], kind="mergesort", na_position="last"
-    ).reset_index(drop=True)
+def checks_from_contract(paths, intervals):
+    """Use the same scale-aware rtol/atol contract as the library helper."""
+    path_checks = paths.assign(check_type="variance_identity", actual=paths["direct_variance"], expected=paths["reconstructed_variance"], N_low=np.nan, N_high=np.nan)
+    interval_checks = intervals.assign(check_type="scaling_identity", actual=intervals["direct_alpha"], expected=intervals["reconstructed_alpha"], N=np.nan)
+    checks = pd.concat([path_checks, interval_checks], ignore_index=True, sort=False)
+    checks["residual"] = checks["actual"] - checks["expected"]
+    checks["absolute_residual"] = checks["residual"].abs()
+    checks["rtol"] = RTOL
+    checks["atol"] = ATOL
+    checks["allowed_error"] = checks["atol"] + checks["rtol"] * np.maximum(checks["actual"].abs(), checks["expected"].abs())
+    checks["normalized_error"] = checks["absolute_residual"] / checks["allowed_error"]
+    checks["status"] = np.where(checks["absolute_residual"] <= checks["allowed_error"], "PASS", "FAIL")
+    checks["check_id"] = np.where(checks["check_type"] == "variance_identity",
+        "variance_identity:" + checks["scenario_id"] + ":N=" + checks["N"].astype("Int64").astype(str),
+        "scaling_identity:" + checks["scenario_id"] + ":N=" + checks["N_low"].astype("Int64").astype(str) + "-" + checks["N_high"].astype("Int64").astype(str))
+    columns = ["check_id", "scenario_id", "check_type", "N", "N_low", "N_high", "actual", "expected", "residual",
+               "absolute_residual", "rtol", "atol", "allowed_error", "normalized_error", "status"]
+    return checks.loc[:, columns].sort_values("check_id", kind="mergesort")
 
 
-def make_figures(variance_summary, scaling_summary, scaling_components):
+def make_figures(paths, intervals, component_intervals):
+    """Generate ignored local visual-review files; CSV/Markdown are committed evidence."""
     plt.style.use("default")
-    scenario_one = variance_summary[variance_summary["scenario_id"].isin(["scenario_1_iid", "scenario_1_rho_0_15"])]
-    iid = scenario_one[scenario_one["scenario_id"] == "scenario_1_iid"]
-    correlated = scenario_one[scenario_one["scenario_id"] == "scenario_1_rho_0_15"]
-    figure, axis = plt.subplots(figsize=(7.2, 4.8))
-    axis.loglog(N_VALUES, 1 / N_VALUES, "k--", label="H(N) = 1/N")
-    axis.loglog(iid["N"], iid["direct_variance"], "o-", label="iid aggregate variance")
-    axis.loglog(correlated["N"], correlated["direct_variance"], "s-", label="correlated aggregate variance (rho=0.15)")
-    axis.set(title="Equal concentration paths do not imply equal volatility scaling", xlabel="Population N", ylabel="Value")
-    axis.legend()
+    figure, (variance_axis, alpha_axis) = plt.subplots(1, 2, figsize=(11.5, 4.4))
+    iid = paths.query("scenario_id == 'scenario_1_iid'")
+    correlated = paths.query("scenario_id == 'scenario_1_rho_0_15'")
+    variance_axis.loglog(N_VALUES, 1 / N_VALUES, "k--", linewidth=2, label="H(N) = 1/N")
+    variance_axis.loglog(
+        iid["N"], iid["direct_variance"], linestyle="None", marker="o", markerfacecolor="none",
+        markeredgecolor="C0", markeredgewidth=1.5, label="IID aggregate variance",
+    )
+    variance_axis.loglog(
+        correlated["N"], correlated["direct_variance"], linestyle="-", marker="s",
+        color="C1", label="Correlated aggregate variance (ρ=0.15)",
+    )
+    variance_axis.axhline(RHO, color="C1", linestyle=":", linewidth=1.2, label="ρ = 0.15")
+    variance_axis.set(
+        title="Concentration and aggregate variance", xlabel="Population scale N", ylabel="H(N) or V(N)"
+    )
+    variance_axis.legend()
+    iid_intervals = intervals.query("scenario_id == 'scenario_1_iid'")
+    correlated_intervals = intervals.query("scenario_id == 'scenario_1_rho_0_15'")
+    alpha_axis.plot(
+        correlated_intervals["N_midpoint"], correlated_intervals["concentration_alpha"], "k--",
+        linewidth=2, label="Concentration alpha = 1",
+    )
+    alpha_axis.plot(
+        iid_intervals["N_midpoint"], iid_intervals["direct_alpha"], linestyle="None", marker="o",
+        markerfacecolor="none", markeredgecolor="C0", markeredgewidth=1.5, label="IID variance alpha = 1",
+    )
+    alpha_axis.plot(
+        correlated_intervals["N_midpoint"], correlated_intervals["direct_alpha"], color="C1", marker="s",
+        label="Correlated variance alpha",
+    )
+    alpha_axis.set_xscale("log", base=2)
+    alpha_axis.set(title="Finite-interval elasticities", xlabel="Interval midpoint", ylabel="Alpha")
+    alpha_axis.legend()
     figure.tight_layout()
     figure.savefig(ARTIFACT_DIR / "figure_1_concentration_is_not_scaling.png", dpi=180)
     plt.close(figure)
 
-    figure, axis = plt.subplots(figsize=(7.2, 4.8))
-    for scenario_id, label, marker in [("scenario_2_heterogeneous_independent", "Heterogeneous independent", "o"), ("scenario_3_covariance_adjusted", "Covariance adjusted", "s")]:
-        subset = scaling_summary[scaling_summary["scenario_id"] == scenario_id]
-        midpoint = np.sqrt(subset["N_low"] * subset["N_high"])
-        axis.plot(midpoint, subset["direct_alpha"], marker=marker, linestyle="-", label=f"{label}: direct")
-        axis.plot(midpoint, subset["reconstructed_alpha"], marker=marker, linestyle="--", fillstyle="none", label=f"{label}: reconstructed")
-    axis.set_xscale("log", base=2)
-    axis.set(title="Direct and reconstructed finite-interval alpha", xlabel="Interval midpoint", ylabel="Alpha")
-    axis.legend()
-    figure.tight_layout()
-    figure.savefig(ARTIFACT_DIR / "figure_2_direct_vs_reconstructed_alpha.png", dpi=180)
-    plt.close(figure)
-
-    figure, axis = plt.subplots(figsize=(7.2, 4.8))
-    subset = scaling_components[scaling_components["scenario_id"] == "scenario_3_covariance_adjusted"].copy()
-    subset["midpoint"] = np.sqrt(subset["N_low"] * subset["N_high"])
-    labels = {("part_001", "part_001"): "Diagonal A", ("part_002", "part_002"): "Diagonal B", ("part_001", "part_002"): "Signed doubled covariance"}
-    for key, label in labels.items():
-        component = subset[(subset["left_part"] == key[0]) & (subset["right_part"] == key[1])]
-        axis.plot(component["midpoint"], component["alpha_contribution"], marker="o", label=label)
-    total = scaling_summary[scaling_summary["scenario_id"] == "scenario_3_covariance_adjusted"]
-    axis.plot(np.sqrt(total["N_low"] * total["N_high"]), total["reconstructed_alpha"], "k--", marker="s", label="Reconstructed total alpha")
-    axis.axhline(0, color="black", linewidth=0.8)
-    axis.set_xscale("log", base=2)
-    axis.set(title="Signed alpha contributions from covariance-adjusted components", xlabel="Interval midpoint", ylabel="Alpha contribution")
-    axis.legend()
-    figure.tight_layout()
-    figure.savefig(ARTIFACT_DIR / "figure_3_alpha_component_contributions.png", dpi=180)
+    figure, (heterogeneous_axis, correlated_axis) = plt.subplots(1, 2, figsize=(12.2, 4.8))
+    panel_specs = [
+        (
+            heterogeneous_axis, "scenario_2_heterogeneous_independent", "Heterogeneous independent components",
+            [("A_FAST", "Fast-component alpha contribution", "C0"), ("A_SLOW", "Slow-component alpha contribution", "C2")],
+            False,
+        ),
+        (
+            correlated_axis, "scenario_1_rho_0_15", "Correlated equal-weight counterexample",
+            [("D_TOTAL", "Diagonal alpha contribution", "C0"), ("B_TOTAL", "Covariance alpha contribution", "C3")],
+            True,
+        ),
+    ]
+    maximum_residual = 0.0
+    for axis, scenario_id, title, component_specs, include_zero_line in panel_specs:
+        component_subset = component_intervals.query("scenario_id == @scenario_id")
+        interval_subset = intervals.query("scenario_id == @scenario_id")
+        maximum_residual = max(maximum_residual, interval_subset["absolute_alpha_residual"].max())
+        for component_id, label, color in component_specs:
+            component = component_subset.query("component_id == @component_id")
+            axis.plot(np.sqrt(component["N_low"] * component["N_high"]), component["alpha_contribution"], color=color, marker="o", label=label)
+        axis.plot(interval_subset["N_midpoint"], interval_subset["direct_alpha"], color="black", marker="s", label="Direct total alpha")
+        axis.plot(interval_subset["N_midpoint"], interval_subset["reconstructed_alpha"], linestyle="None", marker="o", markersize=10, markerfacecolor="none", markeredgecolor="black", markeredgewidth=1.5, label="Reconstructed total alpha")
+        if include_zero_line:
+            axis.axhline(0, color="black", linewidth=0.8)
+        axis.set_xscale("log", base=2)
+        axis.set(title=title, xlabel="Interval midpoint", ylabel="Alpha contribution")
+        axis.legend(fontsize="small")
+    figure.text(0.5, 0.01, f"max |direct - reconstructed| = {maximum_residual:.2e}", ha="center")
+    figure.tight_layout(rect=(0, 0.05, 1, 1))
+    figure.savefig(ARTIFACT_DIR / "figure_2_exact_component_attribution.png", dpi=180)
     plt.close(figure)
 
 
 def write_readme(checks):
-    maxima = checks.groupby("check_type")["residual"].apply(lambda values: values.abs().max())
-    (ARTIFACT_DIR / "README.md").write_text(f"""# Variance and scaling identity demonstration v0.1
+    maxima = checks.groupby("check_type")["absolute_residual"].max()
+    (ARTIFACT_DIR / "README.md").write_text(f"""# Variance and scaling identity demonstration v0.2
 
-## Deterministic provenance
+**State:** REVIEW. This AI-produced algebraic demonstration is not an empirical French-export result.
 
-- Population grid: `{N_VALUES.tolist()}`.
-- Time observations: `{TIME_COUNT}`.
-- `ddof`: `{DDOF}`.
-- Random seed: `{SEED}` (with deterministic scenario/population offsets).
-- Construction: fixed-seed normal matrices are column-centered, QR-orthogonalized, scaled to exact sample covariance identity under the stated `ddof`, and Cholesky-transformed to each target covariance matrix.
+## Reader-facing CSV contract
 
-## Scenarios
+- `scenario_metadata.csv` defines each scenario's purpose, formulas, component universe, and intended main-text status.
+- `path_summary.csv` is the N-level audit table; it includes concentration, expected/direct/reconstructed variance, and grouped diagonal/covariance totals.
+- `interval_summary.csv` is the finite-interval audit table; it includes the concentration alpha alongside direct and reconstructed variance alpha for every scenario.
+- `component_interval_summary.csv` provides scientific component identifiers, labels, multipliers, signs, and signed alpha contributions.
+- `variance_components.csv` remains the detailed component-level accounting audit table. `variance_summary.csv`, `scaling_summary.csv`, and `scaling_components.csv` are retained as API-shaped provenance outputs.
 
-1. **Same concentration, different volatility.** Equal-weight micro contributions use unit marginal shocks with `rho=0` and `rho=0.15`. `H(N)=1/N`; aggregate variance is `rho + (1-rho)/N`.
-2. **Heterogeneous independent parts.** `A1(N)=N^-0.9`, `A2(N)=0.4 N^-0.3`, and `B12(N)=0`.
-3. **Covariance-adjusted parts.** `A1(N)=N^-0.8`, `A2(N)=0.8 N^-0.6`, and `B12(N)=0.1 N^-0.2`. Every target covariance matrix was numerically verified positive definite on the stated grid before panel construction.
+## Deterministic provenance and checks
 
-## Outputs and checks
+- Population grid: `{N_VALUES.tolist()}`; no source data, sampling, or randomness is used.
+- The correlated construction uses `H(N)=1/N`, `V(N)=rho+(1-rho)/N`, and `rho={RHO}`. Its grouped covariance level is positive but increases with N, producing a negative alpha contribution.
+- `checks.csv` applies `allowed_error = atol + rtol * max(abs(actual), abs(expected))` with `rtol={RTOL}` and `atol={ATOL}`.
+- Maximum variance-identity absolute residual: `{maxima['variance_identity']:.3e}`; maximum scaling-identity absolute residual: `{maxima['scaling_identity']:.3e}`.
+- PNG review figures are intentionally ignored by Git; no binary figures are versioned.
 
-- `variance_summary.csv` and `variance_components.csv` are produced by the public variance-accounting API.
-- `scaling_summary.csv` and `scaling_components.csv` are produced by the public scaling-decomposition API.
-- `checks.csv` records designed-versus-measured covariance, variance identity, and scaling identity checks.
-- Maximum designed covariance residual: `{maxima['designed_covariance']:.3e}`.
-- Maximum variance identity residual: `{maxima['variance_identity']:.3e}`.
-- Maximum scaling identity residual: `{maxima['scaling_identity']:.3e}`.
-- Figure 1 compares the shared concentration path with iid and correlated aggregate variance paths.
-- Figure 2 compares direct and reconstructed alpha for Scenarios 2 and 3.
-- Figure 3 shows Scenario 3 diagonal and signed covariance alpha contributions plus their reconstructed total.
+## Local review figures
 
-## Scientific claim boundary
+- Figure 1 juxtaposes the shared concentration path and variance levels with their finite-interval elasticities; IID variance uses hollow markers so the dashed concentration path stays visible.
+- Figure 2 has heterogeneous and correlated component-attribution panels. It overlays open reconstructed-total markers on the direct total and annotates the computed maximum direct-versus-reconstructed residual.
 
-These are deterministic algebraic demonstrations, not empirical French-export results. They do not validate the reported export alpha. They establish only that the computational chain can represent the intended formal argument: equal concentration paths need not imply equal aggregate-volatility scaling, and signed covariance terms can alter aggregate scaling.
+## Failure report
+
+No execution failure occurred when this artifact was generated. Reproduction requires Python with `numpy`, `pandas`, `matplotlib`, and the repository `src/` directory on `PYTHONPATH`. The outcome remains REVIEW because the checks validate algebraic identities only, not an empirical estimand.
 """)
 
 
 def main():
     ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
-    panels = []
-    covariance_checks = []
-    append_scenario(panels, covariance_checks, "scenario_1_iid", lambda n: scenario_one_covariance(n, 0.0), seed_offset=100)
-    append_scenario(panels, covariance_checks, "scenario_1_rho_0_15", lambda n: scenario_one_covariance(n, 0.15), seed_offset=200)
-    append_scenario(panels, covariance_checks, "scenario_2_heterogeneous_independent", scenario_two_covariance, seed_offset=300)
-    append_scenario(panels, covariance_checks, "scenario_3_covariance_adjusted", scenario_three_covariance, seed_offset=400)
-    panel = pd.concat(panels, ignore_index=True)
-    variance_components = build_variance_components(panel, ddof=DDOF)
-    variance_summary = check_variance_identity(panel, ddof=DDOF, rtol=VARIANCE_TOLERANCE, atol=VARIANCE_TOLERANCE)
-    scaling_scenarios = ["scenario_2_heterogeneous_independent", "scenario_3_covariance_adjusted"]
-    scaling_components, scaling_summary = check_scaling_identity(
-        variance_components[variance_components["scenario_id"].isin(scaling_scenarios)],
-        variance_summary[variance_summary["scenario_id"].isin(scaling_scenarios)],
-        rtol=SCALING_TOLERANCE,
-        atol=SCALING_TOLERANCE,
-    )
-    checks = make_checks(variance_summary, scaling_summary, covariance_checks)
+    components, variance = build_analytic_accounting()
+    scaling_components, scaling = check_scaling_identity(components, variance, rtol=RTOL, atol=ATOL)
+    paths = path_summary(components, variance)
+    intervals = interval_summary(scaling, paths)
+    component_intervals = component_interval_summary(scaling_components, intervals, components)
+    checks = checks_from_contract(paths, intervals)
     if not (checks["status"] == "PASS").all():
         raise RuntimeError("one or more demonstration checks failed")
-    variance_summary.to_csv(ARTIFACT_DIR / "variance_summary.csv", index=False)
-    variance_components.to_csv(ARTIFACT_DIR / "variance_components.csv", index=False)
-    scaling_summary.to_csv(ARTIFACT_DIR / "scaling_summary.csv", index=False)
+    scenario_metadata().to_csv(ARTIFACT_DIR / "scenario_metadata.csv", index=False)
+    paths.to_csv(ARTIFACT_DIR / "path_summary.csv", index=False)
+    intervals.to_csv(ARTIFACT_DIR / "interval_summary.csv", index=False)
+    component_intervals.to_csv(ARTIFACT_DIR / "component_interval_summary.csv", index=False)
+    components.to_csv(ARTIFACT_DIR / "variance_components.csv", index=False)
+    variance.to_csv(ARTIFACT_DIR / "variance_summary.csv", index=False)
     scaling_components.to_csv(ARTIFACT_DIR / "scaling_components.csv", index=False)
+    scaling.to_csv(ARTIFACT_DIR / "scaling_summary.csv", index=False)
     checks.to_csv(ARTIFACT_DIR / "checks.csv", index=False)
-    make_figures(variance_summary, scaling_summary, scaling_components)
+    make_figures(paths, intervals, component_intervals)
     write_readme(checks)
 
 
